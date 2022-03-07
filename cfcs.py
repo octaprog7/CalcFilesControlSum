@@ -11,6 +11,7 @@ import argparse
 import pathlib
 import sys
 import my_utils
+import datetime
 
 
 def process(full_path_to_folder: str, ext_list: list, alg: str):
@@ -48,11 +49,16 @@ if __name__ == '__main__':
     if args.ext:
         extensions = args.ext.split(",")
 
-    # print("args.src", args.src)
-    # print("params:", src_folder, algorithm, extensions)
+    loc_now = datetime.datetime.now
 
-    # s = my_utils.split_path("/home/roman/file.ext")
-    # print(s)
-
+    print(f"Folder handling: {src_folder}")
+    extf = extensions
+    if None is extf or not extf:
+        extf = "none"
+    print(f"File extension filter: {extf}")
+    print(f"Checksum calculation algorithm: {algorithm}")
+    print(f"Started: {loc_now()}\n")
     for item in process(src_folder, extensions, algorithm):
-        print(item)
+        print(f"{str(item[0]).upper()}\t{item[1]}")
+
+    print(f"\nEnded: {loc_now()}")
