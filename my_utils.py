@@ -25,7 +25,7 @@ def is_folder_exist(full_folder_path: str) -> bool:
     return folder.is_dir() and folder.exists()
 
 
-def is_file_exist(filename : str) -> bool:
+def is_file_exist(filename: str) -> bool:
     """check file for exist"""
     p = pathlib.Path(filename)
     return p.is_file()

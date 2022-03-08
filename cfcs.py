@@ -7,12 +7,11 @@ second parameter:   algorithm - for calc control sum file (SHA1, SHA224, SHA256,
  SHA512, MD5"""
 
 import argparse
-# import logging
 import pathlib
 import sys
 import my_utils
 import datetime
-# import os
+import my_strings
 
 
 def process(full_path_to_folder: str, ext_list: list, alg: str):
@@ -29,10 +28,8 @@ def process(full_path_to_folder: str, ext_list: list, alg: str):
 def check_files():
     print("Checking files under construction!!!")
 
+
 if __name__ == '__main__':
-    head_header = "#"
-    str_start_files_header = f"{head_header}FILES{head_header}"
-    str_end_files_header = str_start_files_header[::-1]
     # def_ext_check_file = ".cs"  # расширение файла с контрольными суммами по умолчанию
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
     algorithm = "md5"  # алгоритм подсчета
@@ -56,7 +53,8 @@ if __name__ == '__main__':
     md5 or sha256. Default value: md5")
     parser.add_argument("--ext", type=str, help='File extensions that will be subject to checksum calculation! \
     For example: ".zip,.rar,.txt"')
-    parser.add_argument("--check_file", type=str, help="Name of the source file of checksums for checking files.")
+    parser.add_argument("--check_file", type=str, help="Name of the source file of checksums for checking files.\
+    Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
 
     args = parser.parse_args()
 
@@ -76,23 +74,23 @@ if __name__ == '__main__':
 
     loc_now = datetime.datetime.now
 
-    print(f"Folder handling: {src_folder}")
+    print(f"{my_strings.strFolderHandling}: {src_folder}")
     extf = extensions
     if None is extf or not extf:
         extf = "none"
-    print(f"File extension filter: {extf}")
-    print(f"Checksum calculation algorithm: {algorithm}")
+    print(f"{my_strings.strFEF}: {extf}")
+    print(f"{my_strings.strCCA}: {algorithm}")
     print(f"Started: {loc_now()}\n")
     dt = my_utils.DeltaTime()
     total_size = count_files = 0
     #
-    print(str_start_files_header)
+    print(my_strings.str_start_files_header)
     for item in process(src_folder, extensions, algorithm):
         total_size += item[2]  # file size
         count_files += 1
-        print(f"{str(item[0]).upper()}\t{item[1]}")
+        print(f"{str(item[0]).upper()}{my_strings.strCS_filename_splitter}{item[1]}")
 
-    print(str_end_files_header)
+    print(my_strings.str_end_files_header)
     delta = dt.stop()
     print(f"\nEnded: {loc_now()}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/(1024*1024)/delta
