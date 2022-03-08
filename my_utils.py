@@ -25,9 +25,15 @@ def is_folder_exist(full_folder_path: str) -> bool:
     return folder.is_dir() and folder.exists()
 
 
+def is_file_exist(filename : str) -> bool:
+    """check file for exist"""
+    p = pathlib.Path(filename)
+    return p.is_file()
+
+
 def get_owner_folder_path(full_path_to_file: str) -> str:
     """ return owner folder path from full path file name """
-    mypath = pathlib.Path(full_path_to_file)  # .absolute()
+    mypath = pathlib.Path(full_path_to_file).absolute()
     return str(mypath.parent)
 
 
@@ -50,6 +56,7 @@ def split_path(full_path_to_file: str) -> tuple:
 
 
 class DeltaTime:
+    """time interval measurement"""
     @staticmethod
     def get_time() -> float:
         """return time in second"""
