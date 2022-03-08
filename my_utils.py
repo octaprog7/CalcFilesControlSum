@@ -3,6 +3,7 @@
 
 import hashlib
 import pathlib
+import datetime
 
 
 def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
@@ -46,3 +47,21 @@ def split_path(full_path_to_file: str) -> tuple:
     """Divides the file path into three parts: parent (owner folder name), name (file name), suffix(ext)"""
     path = pathlib.Path(full_path_to_file)
     return str(path.parent), path.name, path.suffix
+
+
+class DeltaTime:
+    @staticmethod
+    def get_time() -> float:
+        """return time in second"""
+        return datetime.datetime.now().timestamp()
+
+    def __init__(self):
+        self.start = DeltaTime.get_time()
+
+    def start(self):
+        """call start before measurement"""
+        self.__init__()
+
+    def stop(self) -> float:
+        """return delta time in second"""
+        return DeltaTime.get_time() - self.start

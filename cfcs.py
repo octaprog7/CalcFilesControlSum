@@ -22,13 +22,15 @@ def process(full_path_to_folder: str, ext_list: list, alg: str):
             if not ext_list or str(child.suffix) in ext_list:
                 # file checksum calculation
                 loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
-                yield loc_hash, child.name, alg
+                yield loc_hash, child.name, child.stat().st_size
 
 
 if __name__ == '__main__':
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])
     algorithm = "md5"
     extensions = None
+    # if check == True, checking file operation enabled!
+    check = False
 
     parser = argparse.ArgumentParser(description="utility to calc files control sum in specified folder.",
                                      epilog="""If the source folder is not specified, 
@@ -58,7 +60,14 @@ if __name__ == '__main__':
     print(f"File extension filter: {extf}")
     print(f"Checksum calculation algorithm: {algorithm}")
     print(f"Started: {loc_now()}\n")
+    dt = my_utils.DeltaTime()
+    total_size = count_files = 0
     for item in process(src_folder, extensions, algorithm):
+        total_size += item[2]  # file size
+        count_files += 1
         print(f"{str(item[0]).upper()}\t{item[1]}")
 
-    print(f"\nEnded: {loc_now()}")
+    delta = dt.stop()
+    print(f"\nEnded: {loc_now()}\nFiles: {count_files};\tBytes processed: {total_size}")
+    mib_per_sec = total_size/(1024*1024)/delta
+    print(f"Processing speed [MiB/sec]: {mib_per_sec}")
