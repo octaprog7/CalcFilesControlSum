@@ -25,8 +25,23 @@ def process(full_path_to_folder: str, ext_list: list, alg: str):
                 yield loc_hash, child.name, child.stat().st_size
 
 
-def check_files():
+# разбор файла на элементы
+def parse(control_sum_filename: str):
+    parse_dict = dict()
+    with open(control_sum_filename, "rb") as f:
+        for line_number, line in enumerate(f):
+            if line_number < len(my_strings.ParsingKeys):
+                two_sub_lines = line.split(my_strings.strKeyValueSeparator)  # строку на две подстроки
+                key = my_strings.ParsingKeys[line_number]
+                if key == two_sub_lines[0].strip():
+                    value = two_sub_lines[1].strip()
+                parse_dict[key] = value
+
+
+
+def check_files(control_sum_filename: str):
     print("Checking files under construction!!!")
+    parse(control_sum_filename)
 
 
 if __name__ == '__main__':
@@ -35,14 +50,6 @@ if __name__ == '__main__':
     algorithm = "md5"  # алгоритм подсчета
     extensions = None  # фильтр расширений
     check_file_name = None  # имя файла с контрольными суммами
-    # if check == True, checking file operation enabled!
-    # check_mode = False
-    # default file name folder control sum info
-    # def_cs_filename = src_folder.split(sep=os.path.sep)[-1]  # имя файла с контрольными суммами
-    # if len(def_cs_filename) < 3:
-    #     def_cs_filename = "folder.cs"
-    # else:
-    #     def_cs_filename += def_ext_check_file
 
     parser = argparse.ArgumentParser(description="utility to calc files control sum in specified folder.",
                                      epilog="""If the source folder is not specified, 
@@ -62,7 +69,7 @@ if __name__ == '__main__':
         check_file_name = args.check_file  # режим проверки файлов включен (!= None)
 
     if check_file_name:
-        check_files()  # проверка файлов
+        check_files(check_file_name)  # проверка файлов
         sys.exit()  # выход
 
     if args.src and my_utils.is_folder_exist(args.src):
@@ -74,12 +81,12 @@ if __name__ == '__main__':
 
     loc_now = datetime.datetime.now
 
-    print(f"{my_strings.strFolderHandling}: {src_folder}")
+    print(f"{my_strings.strFolderHandling}{my_strings.strKeyValueSeparator}{src_folder}")
     extf = extensions
     if None is extf or not extf:
         extf = "none"
-    print(f"{my_strings.strFEF}: {extf}")
-    print(f"{my_strings.strCCA}: {algorithm}")
+    print(f"{my_strings.strFEF}{my_strings.strKeyValueSeparator}{extf}")
+    print(f"{my_strings.strCCA}{my_strings.strKeyValueSeparator}{algorithm}")
     print(f"Started: {loc_now()}\n")
     dt = my_utils.DeltaTime()
     total_size = count_files = 0
