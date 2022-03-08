@@ -60,18 +60,19 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.check_file and my_utils.is_file_exist(args.check_file):
+        check_file_name = args.check_file  # режим проверки файлов включен (!= None)
+
+    if check_file_name:
+        check_files()  # проверка файлов
+        sys.exit()  # выход
+
     if args.src and my_utils.is_folder_exist(args.src):
         src_folder = args.src
     if args.alg:
         algorithm = args.alg
     if args.ext:
         extensions = args.ext.split(",")
-    if args.check_file and my_utils.is_file_exist(args.check_file):
-        check_file_name = args.check_file  # режим проверки файлов включен (!= None)
-
-    if check_file_name:
-        check_files()  # проверка файлов
-        sys.exit()     # выход
 
     loc_now = datetime.datetime.now
 
