@@ -78,9 +78,9 @@ class DeltaTime:
 
 
 def load_settings_head_from_file(filename: str) -> str:
+    f_ram = io.StringIO()
     try:
         # create file in RAM
-        f_ram = io.StringIO()
         with open(file=filename, encoding="utf-8") as fp:
             for line in fp:
                 if line.startswith(my_strings.str_start_files_header):
