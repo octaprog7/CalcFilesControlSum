@@ -4,18 +4,21 @@
 import hashlib
 import pathlib
 import datetime
+import my_strings
+import io
 
 
-def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
+# def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
+def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096):
     """return hash of file"""
     h = hashlib.new(algorithm)
     with open(full_path_to_file, "rb") as f:
         for chunk in iter(lambda: f.read(buff_size), b""):
             h.update(chunk)
 
-    if as_hex_digest:
-        return h.hexdigest()
-    return h.digest()
+    # if as_hex_digest:
+    return h.hexdigest()
+    # return h.digest()
 
 
 def is_folder_exist(full_folder_path: str) -> bool:
@@ -72,3 +75,20 @@ class DeltaTime:
     def stop(self) -> float:
         """return delta time in second"""
         return DeltaTime.get_time() - self.start
+
+
+def load_settings_head_from_file(filename: str) -> str:
+    try:
+        # create file in RAM
+        f_ram = io.StringIO()
+        with open(file=filename, encoding="utf-8") as fp:
+            for line in fp:
+                if line.startswith(my_strings.str_start_files_header):
+                    break  # exit, files section!
+                f_ram.write(line)
+    except OSError as e:
+        print(f"{my_strings.strOsError}: {e}")
+    finally:
+        s = f_ram.getvalue()
+        f_ram.close()
+    return s

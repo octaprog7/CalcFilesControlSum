@@ -15,3 +15,19 @@ ParsingKeys = (
     strFEF,
     strCCA
 )
+
+strInvalidSrcFld = "Invalid source folder!"
+strInvalidCheckFn = "Invalid check file name!"
+strOsError = "Operational System Error!"
+
+
+
+
+
+
+#def store_settings(folder: str, extension_filter: str, algorithm: str) -> dict:
+#    res = dict()
+#    res[strFolderHandling] = folder
+#    res[strFEF] = extension_filter
+#    res[strCCA] = algorithm
+#    return res
