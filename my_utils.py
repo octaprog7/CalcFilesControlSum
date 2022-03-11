@@ -61,21 +61,26 @@ def split_path(full_path_to_file: str) -> tuple:
 class DeltaTime:
     """time interval measurement"""
     @staticmethod
-    def get_time() -> float:
+    def get_time() -> datetime.datetime:
         """return time in second"""
-        return datetime.datetime.now().timestamp()
+        return datetime.datetime.now()
 
     def __init__(self):
-        self.start = DeltaTime.get_time()
+        self._start = DeltaTime.get_time()
+        self._stop = None
 
     def start(self):
         """call start before measurement"""
         self.__init__()
 
-    def stop(self) -> float:
+    def delta(self) -> float:
         """return delta time in second"""
-        return DeltaTime.get_time() - self.start
+        self._stop = DeltaTime.get_time()
+        dt = self._stop.timestamp() - self._start.timestamp()
+        return dt
 
+    def get_start_stop(self):
+        return self._start, self._stop
 
 def load_settings_head_from_file(filename: str) -> str:
     f_ram = io.StringIO()

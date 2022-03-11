@@ -10,7 +10,6 @@ import argparse
 import pathlib
 import sys
 import my_utils
-import datetime
 import my_strings
 import json
 import os
@@ -125,11 +124,14 @@ if __name__ == '__main__':
         loc_ext = args.ext.split(",")
         args.ext = loc_ext
 
-    # сохраняю настройки в stdout в виде JSON
-    json.dump(obj=vars(args), fp=sys.stdout, indent=4)
     # текущее время
-    loc_now = datetime.datetime.now
     dt = my_utils.DeltaTime()
+    # добавляю в словарь время
+    loc_d = vars(args)
+    loc_d["start_time"] = str(dt.get_start_stop()[0])
+
+    # сохраняю настройки в stdout в виде JSON
+    json.dump(obj=loc_d, fp=sys.stdout, indent=4)
     total_size = count_files = 0
     # вывод в stdout информации при подсчете контрольных сумм
     print(f"\n{my_strings.str_start_files_header}")
@@ -139,7 +141,7 @@ if __name__ == '__main__':
         print(f"{str(item[0]).upper()}{my_strings.strCS_filename_splitter}{item[1]}")
 
     print(my_strings.str_end_files_header)
-    delta = dt.stop()
-    print(f"\nEnded: {loc_now()}\nFiles: {count_files};\tBytes processed: {total_size}")
+    delta = dt.delta()  # in second [float]
+    print(f"\nEnded: {dt.get_start_stop()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/(1024*1024)/delta
     print(f"Processing speed [MiB/sec]: {mib_per_sec}")
