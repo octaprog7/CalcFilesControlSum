@@ -20,14 +20,12 @@ strInvalidSrcFld = "Invalid source folder!"
 strInvalidCheckFn = "Invalid check file name!"
 strOsError = "Operational System Error!"
 
+strFileNotModified = "File is not modified."
+strFileModified = "Attention! The file has been modified"
+strFileNotFound = "File not found!"
 
+strCheckingStarted = "Checking started!"
+strCheckingEnded = "Checking ended!"
 
+strParseFileError = "Error parsing file!"
 
-
-
-#def store_settings(folder: str, extension_filter: str, algorithm: str) -> dict:
-#    res = dict()
-#    res[strFolderHandling] = folder
-#    res[strFEF] = extension_filter
-#    res[strCCA] = algorithm
-#    return res

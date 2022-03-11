@@ -17,6 +17,9 @@ import os
 
 
 def process(full_path_to_folder: str, ext_list: list, alg: str):
+    """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
+    получая имя файла и его размер в байтах.
+    Функция-генератор"""
     loc_path = pathlib.Path(full_path_to_folder)
     # enumerating files ONLY!!!
     for child in loc_path.iterdir():
@@ -27,8 +30,9 @@ def process(full_path_to_folder: str, ext_list: list, alg: str):
                 yield loc_hash, child.name, child.stat().st_size
 
 
-# разбор файла на имена файлов и их контрольные суммы!
 def parse_files_info(control_sum_filename: str, settings: dict):
+    """разбор файла на имена файлов и их контрольные суммы!
+    Функция-генератор"""
     files_header_found = False
     # print(settings)
     fld = settings["src"]
@@ -42,29 +46,45 @@ def parse_files_info(control_sum_filename: str, settings: dict):
                     continue
             if line.startswith(my_strings.str_end_files_header):
                 break
+            try:
+                two_sub_lines = line.split(my_strings.strCS_filename_splitter)
+                full_file_name = f"{fld}{os.path.sep}{two_sub_lines[1].strip()}"
+                cs = bytes(two_sub_lines[0].strip(), encoding="utf-8")
 
-            two_sub_lines = line.split(my_strings.strCS_filename_splitter)
-            full_file_name = f"{fld}{os.path.sep}{two_sub_lines[1].strip()}"
-            cs = bytes(two_sub_lines[0].strip(), encoding="utf-8")
-
-            yield full_file_name, cs.decode("utf-8").upper()
+                yield full_file_name, cs.decode("utf-8").upper()
+            except Exception as e:
+                print(my_strings.strParseFileError, control_sum_filename)
+                print(e)
 
 
 def check_files(control_sum_filename: str):
-    print("Checking files under construction!!!")
+    """comparison of the current checksum of the file and the checksum read from the file.
+    Функция-генератор"""
+    print(my_strings.strCheckingStarted)
     head = my_utils.load_settings_head_from_file(control_sum_filename)
     settings = json.loads(head)
+    total_tested, modified_files_count, access_errors = 0, 0, 0
     for itm in parse_files_info(control_sum_filename, settings):
-        loc_cs = my_utils.get_hash_file(itm[0])
-        if isinstance(loc_cs, str):
-            loc_cs = loc_cs.upper()
-        # print(itm[1], loc_cs)
-        if loc_cs == itm[1]:
-            print(f"{itm[0]}:\tOK")
+        loc_fn, old_cs = itm[0], itm[1]
+        curr_cs = None
+        try:
+            curr_cs = my_utils.get_hash_file(loc_fn)
+        except OSError as e:
+            access_errors += 1
+            print(e)
+        total_tested += 1
+        if isinstance(curr_cs, str):
+            curr_cs = curr_cs.upper()
+        if curr_cs != old_cs:
+            modified_files_count += 1
+            print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
+
+    # Итоги проверки файлов по их контрольным суммам
+    print(f"Total files checked: {total_tested}\tModified files: {modified_files_count}\tI/O errors: {access_errors}")
 
 
 if __name__ == '__main__':
-    # def_ext_check_file = ".cs"  # расширение файла с контрольными суммами по умолчанию
+    """Главная функция"""
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
     def_algorithm = "md5"  # алгоритм подсчета
     extensions = None  # фильтр расширений
@@ -89,7 +109,7 @@ if __name__ == '__main__':
         raise ValueError(f"{my_strings.strInvalidCheckFn}: {args.check_file}")
 
     if args.check_file:
-        check_files(args.check_file)  # проверка файлов
+        check_files(args.check_file)  # проверка файлов по их контрольным суммам
         sys.exit()  # выход
 
     if args.src:
@@ -105,14 +125,13 @@ if __name__ == '__main__':
         loc_ext = args.ext.split(",")
         args.ext = loc_ext
 
-    # save settings to stream
+    # сохраняю настройки в stdout в виде JSON
     json.dump(obj=vars(args), fp=sys.stdout, indent=4)
-
+    # текущее время
     loc_now = datetime.datetime.now
-
     dt = my_utils.DeltaTime()
     total_size = count_files = 0
-    #
+    # вывод в stdout информации при подсчете контрольных сумм
     print(f"\n{my_strings.str_start_files_header}")
     for item in process(args.src, args.ext, args.alg):
         total_size += item[2]  # file size
