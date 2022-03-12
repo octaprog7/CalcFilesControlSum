@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-"""utility to calc files control sum in specified folder.
-
-command string parameters:
-first parameter:    source - folder where duplicates are searched.
-second parameter:   algorithm - for calc control sum file (SHA1, SHA224, SHA256, SHA384,
- SHA512, MD5"""
+"""Utility to calc files control sum in specified folder.
+    Type --help for command line parameters description."""
 
 import argparse
 import pathlib
@@ -94,7 +90,7 @@ if __name__ == '__main__':
         Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
     parser.add_argument("--src", type=str, help="Folder in which checksums of files are calculated.")
     parser.add_argument("--alg", type=str, help="Algorithm for calculating the checksum. For example \
-    md5 or sha256. Default value: md5", default="md5")
+    MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
     parser.add_argument("--ext", type=str, help='File extensions that will be subject to checksum calculation! \
     For example: ".zip,.rar,.txt"', default="")
 

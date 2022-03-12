@@ -9,16 +9,14 @@ import io
 
 
 # def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
-def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096):
+def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096) -> str:
     """return hash of file"""
     h = hashlib.new(algorithm)
     with open(full_path_to_file, "rb") as f:
         for chunk in iter(lambda: f.read(buff_size), b""):
             h.update(chunk)
 
-    # if as_hex_digest:
     return h.hexdigest().upper()
-    # return h.digest()
 
 
 def is_folder_exist(full_folder_path: str) -> bool:
@@ -52,8 +50,9 @@ def get_file_extension_from_path(full_path_to_file: str) -> str:
     return path.suffix
 
 
-def split_path(full_path_to_file: str) -> tuple:
-    """Divides the file path into three parts: parent (owner folder name), name (file name), suffix(ext)"""
+def split_path(full_path_to_file: str) -> tuple[str, str, str]:
+    """Divides the file path into three parts: parent (owner folder name),
+    name (file name), suffix(ext)"""
     path = pathlib.Path(full_path_to_file)
     return str(path.parent), path.name, path.suffix
 
@@ -79,7 +78,7 @@ class DeltaTime:
         dt = self._stop.timestamp() - self._start.timestamp()
         return dt
 
-    def get_start_stop_times(self):
+    def get_start_stop_times(self) -> tuple[datetime.datetime, datetime.datetime]:
         return self._start, self._stop
 
 
