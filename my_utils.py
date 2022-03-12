@@ -75,8 +75,7 @@ class DeltaTime:
     def delta(self) -> float:
         """return delta time in second"""
         self._stop = DeltaTime.get_time()
-        dt = self._stop.timestamp() - self._start.timestamp()
-        return dt
+        return self._stop.timestamp() - self._start.timestamp()
 
     def get_start_stop_times(self) -> tuple[datetime.datetime, datetime.datetime]:
         return self._start, self._stop
