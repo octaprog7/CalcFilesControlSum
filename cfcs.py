@@ -15,7 +15,7 @@ import json
 import os
 
 
-def process(full_path_to_folder: str, ext_list: list, alg: str):
+def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, str, int]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
     получая имя файла и его размер в байтах.
     Функция-генератор"""
@@ -29,7 +29,7 @@ def process(full_path_to_folder: str, ext_list: list, alg: str):
                 yield loc_hash, child.name, child.stat().st_size
 
 
-def parse_files_info(control_sum_filename: str, settings: dict):
+def parse_files_info(control_sum_filename: str, settings: dict) -> tuple[str, str]:
     """разбор файла на имена файлов и их контрольные суммы!
     Функция-генератор"""
     files_header_found = False
@@ -63,8 +63,7 @@ def check_files(control_sum_filename: str):
     head = my_utils.load_settings_head_from_file(control_sum_filename)
     settings = json.loads(head)
     total_tested, modified_files_count, access_errors = 0, 0, 0
-    for itm in parse_files_info(control_sum_filename, settings):
-        loc_fn, old_cs = itm[0], itm[1]
+    for loc_fn, old_cs in parse_files_info(control_sum_filename, settings):
         curr_cs = None
         try:
             curr_cs = my_utils.get_hash_file(loc_fn)
@@ -72,8 +71,6 @@ def check_files(control_sum_filename: str):
             access_errors += 1
             print(e)
         total_tested += 1
-        if isinstance(curr_cs, str):
-            curr_cs = curr_cs.upper()
         if curr_cs != old_cs:
             modified_files_count += 1
             print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
@@ -89,7 +86,7 @@ if __name__ == '__main__':
     extensions = None  # фильтр расширений
     check_file_name = None  # имя файла с контрольными суммами
 
-    parser = argparse.ArgumentParser(description="utility to calc files control sum in specified folder.",
+    parser = argparse.ArgumentParser(description="utility to Calc Files Control Sum in specified folder.",
                                      epilog="""If the source folder is not specified, 
                                                 current working directory used as source folder!""")
 
@@ -128,20 +125,20 @@ if __name__ == '__main__':
     dt = my_utils.DeltaTime()
     # добавляю в словарь время
     loc_d = vars(args)
-    loc_d["start_time"] = str(dt.get_start_stop()[0])
+    loc_d["start_time"] = str(dt.get_start_stop_times()[0])
 
     # сохраняю настройки в stdout в виде JSON
     json.dump(obj=loc_d, fp=sys.stdout, indent=4)
     total_size = count_files = 0
     # вывод в stdout информации при подсчете контрольных сумм
     print(f"\n{my_strings.str_start_files_header}")
-    for item in process(args.src, args.ext, args.alg):
-        total_size += item[2]  # file size
+    for file_hash, file_name, file_size in process(args.src, args.ext, args.alg):
+        total_size += file_size  # file size
         count_files += 1
-        print(f"{str(item[0]).upper()}{my_strings.strCS_filename_splitter}{item[1]}")
+        print(f"{str(file_hash).upper()}{my_strings.strCS_filename_splitter}{file_name}")
 
     print(my_strings.str_end_files_header)
     delta = dt.delta()  # in second [float]
-    print(f"\nEnded: {dt.get_start_stop()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
+    print(f"\nEnded: {dt.get_start_stop_times()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/(1024*1024)/delta
     print(f"Processing speed [MiB/sec]: {mib_per_sec}")

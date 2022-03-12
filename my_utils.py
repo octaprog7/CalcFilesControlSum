@@ -17,7 +17,7 @@ def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096):
             h.update(chunk)
 
     # if as_hex_digest:
-    return h.hexdigest()
+    return h.hexdigest().upper()
     # return h.digest()
 
 
@@ -79,8 +79,9 @@ class DeltaTime:
         dt = self._stop.timestamp() - self._start.timestamp()
         return dt
 
-    def get_start_stop(self):
+    def get_start_stop_times(self):
         return self._start, self._stop
+
 
 def load_settings_head_from_file(filename: str) -> str:
     f_ram = io.StringIO()
