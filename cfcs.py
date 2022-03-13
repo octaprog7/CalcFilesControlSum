@@ -7,6 +7,7 @@ import pathlib
 import sys
 import my_utils
 import my_strings
+import fnmatch
 import json
 import os
 
@@ -19,10 +20,11 @@ def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, st
     # enumerating files ONLY!!!
     for child in loc_path.iterdir():
         if child.is_file():
-            if not ext_list or str(child.suffix) in ext_list:
-                # file checksum calculation
-                loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
-                yield loc_hash, child.name, child.stat().st_size
+            for pattern in ext_list:
+                if fnmatch.fnmatch(child.name, pattern):
+                    # file checksum calculation
+                    loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
+                    yield loc_hash, child.name, child.stat().st_size
 
 
 def parse_files_info(control_sum_filename: str, settings: dict) -> tuple[str, str]:
@@ -91,8 +93,8 @@ if __name__ == '__main__':
     parser.add_argument("--src", type=str, help="Folder in which checksums of files are calculated.")
     parser.add_argument("--alg", type=str, help="Algorithm for calculating the checksum. For example \
     MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
-    parser.add_argument("--ext", type=str, help='File extensions that will be subject to checksum calculation! \
-    For example: ".zip,.rar,.txt"', default="")
+    parser.add_argument("--ext", type=str, help='Pattern string for filename matching check! \
+    Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.*")
 
     args = parser.parse_args()
 
