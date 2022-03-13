@@ -25,6 +25,7 @@ def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, st
                     # file checksum calculation
                     loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
                     yield loc_hash, child.name, child.stat().st_size
+                    break
 
 
 def parse_files_info(control_sum_filename: str, settings: dict) -> tuple[str, str]:
