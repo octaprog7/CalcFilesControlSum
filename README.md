@@ -8,4 +8,4 @@ Command string parameters:
   
 Example: 
 - cfcs --src=/home/username --alg=sha1 --ext="*.rar" (writing checksum information to stdout).
-- cfcs --src=/home/username --alg=sha1 --ext="*.rar" > control_sum_filename.ext (with storing checksum information).
+- cfcs --src=/home/username --alg=sha1 --ext="*.zip,*.7z,*.mp4" > control_sum_filename.ext (with storing checksum information).
