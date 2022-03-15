@@ -7,5 +7,5 @@ Command string parameters:
   - --check_file - Name of the source file of checksums for checking files. If this option is defined, then the rest do not need to be defined!
   
 Example: 
-- cfcs --src=/home/username --alg=sha1 --ext="*.rar" (writing checksum information to stdout).
-- cfcs --src=/home/username --alg=sha1 --ext="*.zip,*.7z,*.mp4" > control_sum_filename.ext (with storing checksum information).
+- cfcs ```--src=/home/username --alg=sha1 --ext="*.rar,*.avi,*.bmp" (writing checksum information to stdout).```
+- cfcs ```--src=/home/username --alg=sha1 --ext="*.zip,*.7z,*.mp4" > control_sum_filename.ext (with storing checksum information).```
