@@ -11,6 +11,7 @@ import fnmatch
 import json
 import os
 
+MiB_1 = 1024*1024
 
 def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, str, int]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
@@ -139,5 +140,5 @@ if __name__ == '__main__':
     print(my_strings.str_end_files_header)
     delta = dt.delta()  # in second [float]
     print(f"\nEnded: {dt.get_start_stop_times()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
-    mib_per_sec = total_size/(1024*1024)/delta
+    mib_per_sec = total_size/MiB_1/delta
     print(f"Processing speed [MiB/sec]: {mib_per_sec}")
