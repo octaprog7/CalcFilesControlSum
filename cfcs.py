@@ -5,13 +5,16 @@
 import argparse
 import pathlib
 import sys
-import my_utils
-import my_strings
 import fnmatch
 import json
 import os
 
+import my_utils
+import my_strings
+import config
+
 MiB_1 = 1024*1024
+
 
 def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, str, int]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,

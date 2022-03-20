@@ -66,8 +66,15 @@ class ConfigReader(Config):
     def _open(self, filename: str) -> IO:
         return open(file=filename, encoding="utf-8")
 
-    def read(self) -> Iterable[tuple[str, str]]:
-        """Iterable reading config file. function-generator"""
+    def read(self, section_name: str = "") -> Iterable[tuple[str, str, str]]:
+        """Iterable reading config file. function-generator.
+        if section_name is empty (""), this method read all section with their names,
+        In this case, at the beginning of the section, the method returns only one value - its name!
+
+        if section_name not empty, this method read only one section
+        In this case, the method returns only the key-value pairs of the specified section!
+        """
+        current_section_name = None
         for line in self._fp:
             parts = line.strip().split(sep=Config.KEY_VAL_DELIM)
             key, value = parts[0].strip(), None
@@ -75,4 +82,17 @@ class ConfigReader(Config):
                 continue  # empty string
             if len(parts) > 1:
                 value = parts[1].strip()
-            yield key, value
+            if value is None:  # and section_name:
+                if key.startswith(Config.SEC_NAME_START) and key.endswith(Config.SEC_NAME_END):
+                    current_section_name = key[1:-1]
+                    if not section_name:
+                        yield current_section_name  # return section name only!
+                    continue
+
+            if section_name and current_section_name == section_name:
+                yield key, value  # filtered output. return key, value pair
+            if not section_name:
+                yield key, value  # return key, value pair
+
+        # return current file position
+        return self._fp.tell()
