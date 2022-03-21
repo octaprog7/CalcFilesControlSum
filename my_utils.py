@@ -4,8 +4,10 @@
 import hashlib
 import pathlib
 import datetime
+from typing import IO
+
 import my_strings
-import io
+import config
 
 
 # def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
@@ -81,6 +83,7 @@ class DeltaTime:
         return self._start, self._stop
 
 
+"""
 def load_settings_head_from_file(filename: str) -> str:
     f_ram = io.StringIO()
     try:
@@ -96,3 +99,24 @@ def load_settings_head_from_file(filename: str) -> str:
         s = f_ram.getvalue()
         f_ram.close()
     return s
+"""
+
+
+def settings_from_file(filename: str) -> dict:
+    """Read all settings from file and convert it into dict"""
+    res = dict()
+    try:
+        cr = config.ConfigReader(filename)
+        for key, value in cr.read(my_strings.str_settings_header):
+            res[key] = value
+    except OSError as e:
+        print(f"{my_strings.strOsError}: {e}")
+    return res
+
+
+"""
+def settings_to_file(settings: dict, fp: IO[str]):
+    
+    for k, v in settings:
+        ...
+"""
