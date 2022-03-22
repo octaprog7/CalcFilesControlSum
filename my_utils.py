@@ -83,40 +83,13 @@ class DeltaTime:
         return self._start, self._stop
 
 
-"""
-def load_settings_head_from_file(filename: str) -> str:
-    f_ram = io.StringIO()
-    try:
-        # create file in RAM
-        with open(file=filename, encoding="utf-8") as fp:
-            for line in fp:
-                if line.startswith(my_strings.str_start_files_header):
-                    break  # exit, files section!
-                f_ram.write(line)
-    except OSError as e:
-        print(f"{my_strings.strOsError}: {e}")
-    finally:
-        s = f_ram.getvalue()
-        f_ram.close()
-    return s
-"""
-
-
 def settings_from_file(filename: str) -> dict:
     """Read all settings from file and convert it into dict"""
-    res = dict()
+    res = None
     try:
         cr = config.ConfigReader(filename)
-        for key, value in cr.read(my_strings.str_settings_header):
-            res[key] = value
+        res = dict(cr.read(my_strings.str_settings_header))
     except OSError as e:
         print(f"{my_strings.strOsError}: {e}")
     return res
 
-
-"""
-def settings_to_file(settings: dict, fp: IO[str]):
-    
-    for k, v in settings:
-        ...
-"""
