@@ -7,6 +7,7 @@ import pathlib
 import sys
 import fnmatch
 import os
+from collections.abc import Iterable
 
 import my_utils
 import my_strings
@@ -15,7 +16,7 @@ import config
 MiB_1 = 1024*1024
 
 
-def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, str, int]:
+def process(full_path_to_folder: str, ext_list: list, alg: str) -> Iterable[tuple[str, str, int]]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
     получая имя файла и его размер в байтах.
     Функция-генератор"""
@@ -32,10 +33,9 @@ def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, st
 
 
 # parse_files_info
-def parse_control_sum_file(control_sum_filename: str, settings: dict) -> tuple[str, str]:
+def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterable[tuple[str, str]]:
     """разбор файла на имена файлов и их контрольные суммы!
     Функция-генератор"""
-    # print(settings)
     fld = settings["src"]
     cr = config.ConfigReader(control_sum_filename)
     for cs_from_file, filename_ext in cr.read(my_strings.str_start_files_header):
@@ -122,7 +122,6 @@ if __name__ == '__main__':
     # сохраняю настройки в stdout
     cw = config.ConfigWriter(sys.stdout)
     cw.write_section(my_strings.str_settings_header, loc_d.items())
-    # json.dump(obj=loc_d, fp=sys.stdout, indent=4)
 
     total_size = count_files = 0
     # вывод в stdout информации при подсчете контрольных сумм
