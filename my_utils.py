@@ -4,7 +4,6 @@
 import hashlib
 import pathlib
 import datetime
-from typing import IO
 
 import my_strings
 import config
@@ -79,8 +78,11 @@ class DeltaTime:
         self._stop = DeltaTime.get_time()
         return self._stop.timestamp() - self._start.timestamp()
 
-    def get_start_stop_times(self) -> tuple[datetime.datetime, datetime.datetime]:
-        return self._start, self._stop
+    def get_start(self) -> datetime.datetime:
+        return self._start
+
+    def get_stop(self) -> datetime.datetime:
+        return self._stop
 
 
 def settings_from_file(filename: str) -> dict:
@@ -89,7 +91,8 @@ def settings_from_file(filename: str) -> dict:
     try:
         cr = config.ConfigReader(filename)
         res = dict(cr.read(my_strings.str_settings_header))
+        if isinstance(res["ext"], str):  # преобразование строки в список с расширениями!
+            res["ext"] = res["ext"].replace("[", "").replace("]", "").split(sep=",")
     except OSError as e:
         print(f"{my_strings.strOsError}: {e}")
     return res
-

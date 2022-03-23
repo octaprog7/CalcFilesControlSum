@@ -110,6 +110,7 @@ if __name__ == '__main__':
         args.alg = def_algorithm
 
     if args.ext:
+        # формирование списка расширений для записи в секцию настроек файла
         loc_ext = args.ext.split(",")
         args.ext = loc_ext
 
@@ -117,7 +118,7 @@ if __name__ == '__main__':
     dt = my_utils.DeltaTime()
     # добавляю в словарь время
     loc_d = vars(args)
-    loc_d["start_time"] = str(dt.get_start_stop_times()[0])
+    loc_d["start_time"] = str(dt.get_start())
 
     # сохраняю настройки в stdout
     cw = config.ConfigWriter(sys.stdout)
@@ -133,6 +134,6 @@ if __name__ == '__main__':
 
     cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"Ended: {dt.get_start_stop_times()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"Ended: {dt.get_start()}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/MiB_1/delta
     cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")
