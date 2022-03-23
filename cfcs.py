@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument("--alg", type=str, help="Algorithm for calculating the checksum. For example \
     MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
     parser.add_argument("--ext", type=str, help='Pattern string for filename matching check! \
-    Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', required=True)
+    Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.zip")
 
     args = parser.parse_args()
 
