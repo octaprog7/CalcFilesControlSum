@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import setuptools
 
 with open("README.md") as file:
@@ -5,8 +6,8 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="cfcs-package-octaprog7",
-    version="0.95",
-    author="octaprog7",
+    version="1.0",
+    author="Roman Kaban",
     author_email="goctaprog@gmail.com",
     description="calculate files control sum",
     long_description=read_me_description,
@@ -17,6 +18,12 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+	"Development Status :: 5 - Production/Stable",
+	"Environment :: Console",
+	"Intended Audience :: End Users/Desktop",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
     ],
-    python_requires='>=3.5',
+    package_dir={"": "cfcs_package"},
+    python_requires='>=3.9.2',
 )
