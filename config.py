@@ -5,6 +5,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import IO
+import io
 
 
 class Config(ABC):
@@ -13,10 +14,18 @@ class Config(ABC):
     SEC_NAME_END = "}"
     KEY_VAL_DELIM = "\t"
 
-    def __init__(self, filename: str):
-        self._f_name = filename
-        self._fp = None
-        self._fp = self._open(self._f_name)
+    def __init__(self, filename_or_fileobj: [str, IO]):
+        if isinstance(filename_or_fileobj, str):
+            self._f_name = filename_or_fileobj
+            self._fp = None
+            # открываю классический файл на диске
+            self._fp = self._open(self._f_name)
+        elif isinstance(filename_or_fileobj, io.TextIOWrapper):
+            # операции будут производится над уже созданным файловым объектом (например sys.stdout)
+            self._fp = filename_or_fileobj
+            self._f_name = None
+        else:
+            raise ValueError(f"Invalid input parameter: {filename_or_fileobj}")
 
     @abstractmethod
     def _open(self, filename: str):
@@ -27,7 +36,7 @@ class Config(ABC):
         return f"{Config.SEC_NAME_START}{section_name}{Config.SEC_NAME_END}"
 
     def __del__(self):
-        if self._fp:
+        if self._f_name and self._fp:
             self._fp.close()
             del self._fp
 
@@ -51,14 +60,21 @@ class ConfigWriter(Config):
         return f"{str(key)}{self.KEY_VAL_DELIM}{str(value)}"
 
     def write_section(self, name: str, keys_and_values: Iterable[tuple[str, str]]):
-        """write section with name to file"""
+        """write section with name to file
+        if keys_and_values is None, write section header only"""
         line = self.get_section_header(name)
         print(line, file=self._fp)
+        if keys_and_values is None:
+            return
         for k, v in keys_and_values:
             print(self._get_line(k, v), file=self._fp)
 
         # empty string
         print("", file=self._fp)
+
+    def write_line(self, line: str):
+        """write only one line to file or stream"""
+        print(line, file=self._fp)
 
 
 class ConfigReader(Config):
@@ -66,7 +82,7 @@ class ConfigReader(Config):
     def _open(self, filename: str) -> IO:
         return open(file=filename, encoding="utf-8")
 
-    def read(self, section_name: str = "") -> Iterable[tuple[str, str, str]]:
+    def read(self, section_name: str = "") -> Iterable[tuple[str, str]]:
         """Iterable reading config file. function-generator.
         if section_name is empty (""), this method read all section with their names,
         In this case, at the beginning of the section, the method returns only one value - its name!

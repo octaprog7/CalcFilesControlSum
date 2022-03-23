@@ -6,8 +6,8 @@ import argparse
 import pathlib
 import sys
 import fnmatch
-import json
 import os
+from collections.abc import Iterable
 
 import my_utils
 import my_strings
@@ -16,7 +16,7 @@ import config
 MiB_1 = 1024*1024
 
 
-def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, str, int]:
+def process(full_path_to_folder: str, ext_list: list, alg: str) -> Iterable[tuple[str, str, int]]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
     получая имя файла и его размер в байтах.
     Функция-генератор"""
@@ -32,41 +32,30 @@ def process(full_path_to_folder: str, ext_list: list, alg: str) -> tuple[str, st
                     break
 
 
-def parse_files_info(control_sum_filename: str, settings: dict) -> tuple[str, str]:
+# parse_files_info
+def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterable[tuple[str, str]]:
     """разбор файла на имена файлов и их контрольные суммы!
     Функция-генератор"""
-    files_header_found = False
-    # print(settings)
     fld = settings["src"]
-    with open(control_sum_filename, "r", encoding="utf-8") as f:
-        for line in f:
-            if not files_header_found:
-                if not line.startswith(my_strings.str_start_files_header):
-                    continue  # skip settings section!
-                else:
-                    files_header_found = True
-                    continue
-            if line.startswith(my_strings.str_end_files_header):
-                break
-            try:
-                two_sub_lines = line.split(my_strings.strCS_filename_splitter)
-                full_file_name = f"{fld}{os.path.sep}{two_sub_lines[1].strip()}"
-                cs = bytes(two_sub_lines[0].strip(), encoding="utf-8")
+    cr = config.ConfigReader(control_sum_filename)
+    for cs_from_file, filename_ext in cr.read(my_strings.str_start_files_header):
+        try:
+            cs = bytes(cs_from_file.strip(), encoding="utf-8")
+            full_file_name = f"{fld}{os.path.sep}{filename_ext.strip()}"
 
-                yield full_file_name, cs.decode("utf-8").upper()
-            except Exception as e:
-                print(my_strings.strParseFileError, control_sum_filename)
-                print(e)
+            yield full_file_name, cs.decode("utf-8").upper()
+        except Exception as e:
+            print(my_strings.strParseFileError, control_sum_filename)
+            print(e)
 
 
 def check_files(control_sum_filename: str):
     """comparison of the current checksum of the file and the checksum read from the file.
     Функция-генератор"""
     print(my_strings.strCheckingStarted)
-    head = my_utils.load_settings_head_from_file(control_sum_filename)
-    settings = json.loads(head)
+    settings = my_utils.settings_from_file(control_sum_filename)
     total_tested, modified_files_count, access_errors = 0, 0, 0
-    for loc_fn, old_cs in parse_files_info(control_sum_filename, settings):
+    for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
         curr_cs = None
         try:
             curr_cs = my_utils.get_hash_file(loc_fn)
@@ -121,6 +110,7 @@ if __name__ == '__main__':
         args.alg = def_algorithm
 
     if args.ext:
+        # формирование списка расширений для записи в секцию настроек файла
         loc_ext = args.ext.split(",")
         args.ext = loc_ext
 
@@ -128,20 +118,22 @@ if __name__ == '__main__':
     dt = my_utils.DeltaTime()
     # добавляю в словарь время
     loc_d = vars(args)
-    loc_d["start_time"] = str(dt.get_start_stop_times()[0])
+    loc_d["start_time"] = str(dt.get_start())
 
-    # сохраняю настройки в stdout в виде JSON
-    json.dump(obj=loc_d, fp=sys.stdout, indent=4)
+    # сохраняю настройки в stdout
+    cw = config.ConfigWriter(sys.stdout)
+    cw.write_section(my_strings.str_settings_header, loc_d.items())
+
     total_size = count_files = 0
     # вывод в stdout информации при подсчете контрольных сумм
-    print(f"\n{my_strings.str_start_files_header}")
+    cw.write_section(my_strings.str_start_files_header, None)
     for file_hash, file_name, file_size in process(args.src, args.ext, args.alg):
         total_size += file_size  # file size
         count_files += 1
-        print(f"{str(file_hash).upper()}{my_strings.strCS_filename_splitter}{file_name}")
+        cw.write_line(f"{str(file_hash).upper()}{my_strings.strCS_filename_splitter}{file_name}")
 
-    print(my_strings.str_end_files_header)
+    cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    print(f"\nEnded: {dt.get_start_stop_times()[1]}\nFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"Ended: {dt.get_start()}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/MiB_1/delta
-    print(f"Processing speed [MiB/sec]: {mib_per_sec}")
+    cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")

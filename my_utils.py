@@ -4,8 +4,9 @@
 import hashlib
 import pathlib
 import datetime
+
 import my_strings
-import io
+import config
 
 
 # def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
@@ -77,22 +78,21 @@ class DeltaTime:
         self._stop = DeltaTime.get_time()
         return self._stop.timestamp() - self._start.timestamp()
 
-    def get_start_stop_times(self) -> tuple[datetime.datetime, datetime.datetime]:
-        return self._start, self._stop
+    def get_start(self) -> datetime.datetime:
+        return self._start
+
+    def get_stop(self) -> datetime.datetime:
+        return self._stop
 
 
-def load_settings_head_from_file(filename: str) -> str:
-    f_ram = io.StringIO()
+def settings_from_file(filename: str) -> dict:
+    """Read all settings from file and convert it into dict"""
+    res = None
     try:
-        # create file in RAM
-        with open(file=filename, encoding="utf-8") as fp:
-            for line in fp:
-                if line.startswith(my_strings.str_start_files_header):
-                    break  # exit, files section!
-                f_ram.write(line)
+        cr = config.ConfigReader(filename)
+        res = dict(cr.read(my_strings.str_settings_header))
+        if isinstance(res["ext"], str):  # преобразование строки в список с расширениями!
+            res["ext"] = res["ext"].replace("[", "").replace("]", "").split(sep=",")
     except OSError as e:
         print(f"{my_strings.strOsError}: {e}")
-    finally:
-        s = f_ram.getvalue()
-        f_ram.close()
-    return s
+    return res
