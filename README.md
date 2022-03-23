@@ -5,9 +5,9 @@ To later check the files for changes, you need to save this information
 to a file by redirecting the output to a file (> filename.ext)
 
 Command string parameters:
-  - --src - the checksums of the files in this folder are calculated.
-  - --alg - for calc control sum file (SHA1, SHA224, SHA256, SHA384, SHA512, MD5.
-  - --ext - File name templates, according to which the checksum of the file will be calculated. For example: "*.zip".
+  - --src - the checksums of the files in this folder are calculated. Default - current working dir.
+  - --alg - for calc control sum file (SHA1, SHA224, SHA256, SHA384, SHA512, MD5). Default - MD5
+  - --ext - File name templates, according to which the checksum of the file will be calculated. For example: "*.zip". Default - "*.*"
   - --check_file - Name of the source file of checksums for checking files. If this option is defined, then the rest do not need to be defined!
   
 Example: 
