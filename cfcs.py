@@ -134,6 +134,6 @@ if __name__ == '__main__':
 
     cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"Ended: {dt.get_start()}\nFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"Ended: {dt.get_stop()}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size/MiB_1/delta
     cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")
