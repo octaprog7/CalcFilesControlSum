@@ -1,5 +1,9 @@
 Utility to Calc Files Control Sum (CFCS) in specified folder.
 
+File checksum information is written to stdout.
+To later check the files for changes, you need to save this information 
+to a file by redirecting the output to a file (> filename.ext)
+
 Command string parameters:
   - --src - the checksums of the files in this folder are calculated.
   - --alg - for calc control sum file (SHA1, SHA224, SHA256, SHA384, SHA512, MD5.
