@@ -1,6 +1,0 @@
-Перейти в папку /PycharmProjects/CalcFilesControlSum/venv/bin$
-$ source activate # активация виртуального окружения
-Перейти в папку со скриптом
-$ pyinstaller --onefile cfcs.py # предварительно pyinstaller должен быть установлен, можно еще установить пакет upx
-Результат в папке distr 
-
