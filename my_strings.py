@@ -8,7 +8,6 @@ head_header = "#"
 str_start_files_header = f"FILES_AND_CONTROL_SUM"
 str_settings_header = "SETTINGS"
 str_info_section = "INFO AND STATISTICS"
-str_end_files_header = str_start_files_header[::-1]
 strCS_filename_splitter = "\t"
 strKeyValueSeparator = ":"
 

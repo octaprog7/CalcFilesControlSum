@@ -7,25 +7,26 @@ from collections.abc import Iterable
 from typing import IO
 import io
 
+import my_strings
+
 
 class Config(ABC):
     """base class for work with simple key-value config separated by sections"""
     SEC_NAME_START = "{"
     SEC_NAME_END = "}"
-    KEY_VAL_DELIM = "\t"
 
-    def __init__(self, filename_or_fileobj: [str, IO]):
-        if isinstance(filename_or_fileobj, str):
-            self._f_name = filename_or_fileobj
+    def __init__(self, filename_or_fileobject: [str, IO]):
+        if isinstance(filename_or_fileobject, str):
+            self._f_name = filename_or_fileobject
             self._fp = None
             # открываю классический файл на диске
             self._fp = self._open(self._f_name)
-        elif isinstance(filename_or_fileobj, io.TextIOWrapper):
+        elif isinstance(filename_or_fileobject, io.TextIOWrapper):
             # операции будут производится над уже созданным файловым объектом (например sys.stdout)
-            self._fp = filename_or_fileobj
+            self._fp = filename_or_fileobject
             self._f_name = None
         else:
-            raise ValueError(f"Invalid input parameter: {filename_or_fileobj}")
+            raise ValueError(f"Invalid input parameter: {filename_or_fileobject}")
 
     @abstractmethod
     def _open(self, filename: str):
@@ -55,11 +56,12 @@ class ConfigWriter(Config):
     def _open(self, filename: str) -> IO:
         return open(file=filename, mode="w", encoding="utf-8")
 
-    def _get_line(self, key: str, value: str) -> str:
+    @staticmethod
+    def _get_line(key: str, value: str) -> str:
         """for class internal use"""
-        return f"{str(key)}{self.KEY_VAL_DELIM}{str(value)}"
+        return f"{str(key)}{my_strings.strCS_filename_splitter}{str(value)}"
 
-    def write_section(self, name: str, keys_and_values: Iterable[tuple[str, str]]):
+    def write_section(self, name: str, keys_and_values: Iterable[tuple[str, str]] or None):
         """write section with name to file
         if keys_and_values is None, write section header only"""
         line = self.get_section_header(name)
@@ -92,7 +94,7 @@ class ConfigReader(Config):
         """
         current_section_name = None
         for line in self._fp:
-            parts = line.strip().split(sep=Config.KEY_VAL_DELIM)
+            parts = line.strip().split(sep=my_strings.strCS_filename_splitter)
             key, value = parts[0].strip(), None
             if not key:
                 continue  # empty string
