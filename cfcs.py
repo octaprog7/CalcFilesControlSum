@@ -72,7 +72,6 @@ def check_files(control_sum_filename: str) -> tuple:
 def main():
     """Главная функция"""
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
-    def_algorithm = "md5"  # алгоритм подсчета
 
     parser = argparse.ArgumentParser(description="utility to Calc Files Control Sum in specified folder.",
                                      epilog="""If the source folder is not specified, 
@@ -105,9 +104,6 @@ def main():
             raise ValueError(f"{my_strings.strInvalidSrcFld}: {args.src}")
     else:
         args.src = src_folder
-
-    if not args.alg:
-        args.alg = def_algorithm
 
     if args.ext:
         # формирование списка расширений для записи в секцию настроек файла
