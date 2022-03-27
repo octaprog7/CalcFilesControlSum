@@ -49,10 +49,9 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
             print(e)
 
 
-def check_files(control_sum_filename: str):
+def check_files(control_sum_filename: str) -> tuple:
     """comparison of the current checksum of the file and the checksum read from the file.
     Функция-генератор"""
-    print(my_strings.strCheckingStarted)
     settings = my_utils.settings_from_file(control_sum_filename)
     total_tested, modified_files_count, access_errors = 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
@@ -67,28 +66,25 @@ def check_files(control_sum_filename: str):
             modified_files_count += 1
             print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
 
-    # Итоги проверки файлов по их контрольным суммам
-    print(f"Total files checked: {total_tested}\tModified files: {modified_files_count}\tI/O errors: {access_errors}")
+    return total_tested, modified_files_count, access_errors
 
 
-if __name__ == '__main__':
+def main():
     """Главная функция"""
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
     def_algorithm = "md5"  # алгоритм подсчета
-    extensions = None  # фильтр расширений
-    check_file_name = None  # имя файла с контрольными суммами
 
     parser = argparse.ArgumentParser(description="utility to Calc Files Control Sum in specified folder.",
                                      epilog="""If the source folder is not specified, 
-                                                current working directory used as source folder!""")
+                                                    current working directory used as source folder!""")
 
     parser.add_argument("--check_file", type=str, help="Name of the source file of checksums for checking files.\
-        Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
+            Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
     parser.add_argument("--src", type=str, help="Folder in which checksums of files are calculated.")
     parser.add_argument("--alg", type=str, help="Algorithm for calculating the checksum. For example \
-    MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
+        MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
     parser.add_argument("--ext", type=str, help='Pattern string for filename matching check! \
-    Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.zip")
+        Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.zip")
 
     args = parser.parse_args()
 
@@ -97,7 +93,11 @@ if __name__ == '__main__':
         raise ValueError(f"{my_strings.strInvalidCheckFn}: {args.check_file}")
 
     if args.check_file:
-        check_files(args.check_file)  # проверка файлов по их контрольным суммам
+        print(my_strings.strCheckingStarted)
+        # проверка файлов по их контрольным суммам
+        total, modified, access_err = check_files(args.check_file)
+        # Итоги проверки файлов по их контрольным суммам
+        print(f"Total files checked: {total}\tModified files: {modified}\tI/O errors: {access_err}")
         sys.exit()  # выход
 
     if args.src:
@@ -135,5 +135,9 @@ if __name__ == '__main__':
     cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
     cw.write_line(f"Ended: {dt.get_stop()}\nFiles: {count_files};\tBytes processed: {total_size}")
-    mib_per_sec = total_size/MiB_1/delta
+    mib_per_sec = total_size / MiB_1 / delta
     cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")
+
+
+if __name__ == '__main__':
+    main()
