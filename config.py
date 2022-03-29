@@ -14,6 +14,7 @@ class Config(ABC):
     """base class for work with simple key-value config separated by sections"""
     SEC_NAME_START = "{"
     SEC_NAME_END = "}"
+    min_section_name_length = 5
 
     def __init__(self, filename_or_fileobject: [str, IO]):
         if isinstance(filename_or_fileobject, str):
@@ -100,8 +101,10 @@ class ConfigReader(Config):
                 continue  # empty string
             if len(parts) > 1:
                 value = parts[1].strip()
-            if value is None:  # and section_name:
+            if value is None:  # key only:
                 if key.startswith(Config.SEC_NAME_START) and key.endswith(Config.SEC_NAME_END):
+                    if len(key) < Config.min_section_name_length:
+                        raise ValueError(f"Invalid section name length!: {key}")
                     current_section_name = key[1:-1]
                     if not section_name:
                         yield current_section_name  # return section name only!
@@ -110,7 +113,7 @@ class ConfigReader(Config):
             if section_name and current_section_name == section_name:
                 yield key, value  # filtered output. return key, value pair
             if not section_name:
-                yield key, value  # return key, value pair
+                yield key, value  # return key, value pair. Not filtered output. Return All!
 
         # return current file position
         return self._fp.tell()
