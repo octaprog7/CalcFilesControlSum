@@ -114,7 +114,7 @@ def main():
     dt = my_utils.DeltaTime()
     # добавляю в словарь время
     loc_d = vars(args)
-    loc_d["start_time"] = str(dt.get_start())
+    loc_d["start_time"] = str(dt.start_time)
 
     # сохраняю настройки в stdout
     cw = config.ConfigWriter(sys.stdout)
@@ -130,7 +130,7 @@ def main():
 
     cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"Ended: {dt.get_stop()}\nFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"Ended: {dt.stop_time}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size / MiB_1 / delta
     cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")
 
