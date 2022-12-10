@@ -35,7 +35,8 @@ def is_file_exist(filename: str) -> bool:
 
 def get_owner_folder_path(full_path_to_file: str) -> str:
     """ return owner folder path from full path file name """
-    mypath = pathlib.Path(full_path_to_file).absolute()
+    # mypath = pathlib.Path(full_path_to_file).absolute()
+    mypath = pathlib.Path(full_path_to_file)
     return str(mypath.parent)
 
 
