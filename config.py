@@ -66,17 +66,17 @@ class ConfigWriter(Config):
         """write section with name to file
         if keys_and_values is None, write section header only"""
         line = self.get_section_header(name)
-        print(line, file=self._fp)
+        self.write_line(line)
         if keys_and_values is None:
             return
         for k, v in keys_and_values:
-            print(self._get_line(k, v), file=self._fp)
+            self.write_line(self._get_line(k, v))
 
         # empty string
-        print("", file=self._fp)
+        self.write_line("")
 
     def write_line(self, line: str):
-        """write only one line to file or stream"""
+        """write only one line(s) to file or stream"""
         print(line, file=self._fp)
 
 
