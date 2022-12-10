@@ -16,7 +16,7 @@ import config
 MiB_1 = 1024*1024
 
 
-def process(full_path_to_folder: str, ext_list: list, alg: str) -> Iterable[tuple[str, str, int]]:
+def process(full_path_to_folder: str, patterns: list, alg: str) -> Iterable[tuple[str, str, int]]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
     получая имя файла и его размер в байтах.
     Функция-генератор"""
@@ -24,7 +24,7 @@ def process(full_path_to_folder: str, ext_list: list, alg: str) -> Iterable[tupl
     # enumerating files ONLY!!!
     for child in loc_path.iterdir():
         if child.is_file():
-            for pattern in ext_list:
+            for pattern in patterns:
                 if fnmatch.fnmatch(child.name, pattern):
                     # file checksum calculation
                     loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
