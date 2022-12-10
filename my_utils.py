@@ -79,10 +79,12 @@ class DeltaTime:
         self._stop = DeltaTime.get_time()
         return self._stop.timestamp() - self._start.timestamp()
 
-    def get_start(self) -> datetime.datetime:
+    @property
+    def start_time(self) -> datetime.datetime:
         return self._start
 
-    def get_stop(self) -> datetime.datetime:
+    @property
+    def stop_time(self) -> datetime.datetime:
         return self._stop
 
 
