@@ -117,7 +117,7 @@ def main():
     loc_d["start_time"] = str(dt.start_time)
 
     # сохраняю настройки в stdout
-    cw = config.ConfigWriter(sys.stdout)
+    cw = config.ConfigWriter(filename_or_fileobject=sys.stdout, enbl_crc=True)
     cw.write_section(my_strings.str_settings_header, loc_d.items())
 
     total_size = count_files = 0
@@ -132,7 +132,7 @@ def main():
     delta = dt.delta()  # in second [float]
     cw.write_line(f"Ended: {dt.stop_time}\nFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size / MiB_1 / delta
-    cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec}")
+    cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec:.3f}")
 
 
 if __name__ == '__main__':

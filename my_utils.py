@@ -94,8 +94,10 @@ def settings_from_file(filename: str) -> dict:
     try:
         cr = config.ConfigReader(filename)
         res = dict(cr.read(my_strings.str_settings_header))
-        if isinstance(res["ext"], str):  # преобразование строки в список с расширениями!
-            res["ext"] = res["ext"].replace("[", "").replace("]", "").split(sep=",")
+        if isinstance(res["ext"], str):
+            # преобразование строки в список с расширениями!
+            lst = res["ext"].replace("[", "").replace("]", "").split(sep=",")
+            res["ext"] = lst
     except OSError as e:
         print(f"{my_strings.strOsError}: {e}")
     return res

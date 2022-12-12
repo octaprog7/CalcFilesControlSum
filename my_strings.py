@@ -23,3 +23,4 @@ strCheckingStarted = "Checking started!"
 strCheckingEnded = "Checking ended!"
 
 strParseFileError = "Error parsing file!"
+strCRClabel = "CRC_VAL"

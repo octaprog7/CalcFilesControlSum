@@ -16,7 +16,9 @@ class Config(ABC):
     SEC_NAME_END = "}"
     min_section_name_length = 5
 
-    def __init__(self, filename_or_fileobject: [str, IO]):
+    def __init__(self, filename_or_fileobject: [str, IO], enbl_crc: bool = False):
+        # подсчитать crc перед записью настроек или нет!
+        self._enable_crc = enbl_crc
         if isinstance(filename_or_fileobject, str):
             self._f_name = filename_or_fileobject
             self._fp = None
@@ -28,6 +30,17 @@ class Config(ABC):
             self._f_name = None
         else:
             raise ValueError(f"Invalid input parameter: {filename_or_fileobject}")
+        if self.enable_crc:
+            import hashlib # для расчета CRC
+            self.hash = hashlib.new("md5")
+
+    @property
+    def enable_crc(self) -> bool:
+        return self._enable_crc
+
+    @enable_crc.setter
+    def enable_crc(self, value: bool):
+        self._enable_crc = value
 
     @abstractmethod
     def _open(self, filename: str):
@@ -54,6 +67,7 @@ class ConfigWriter(Config):
     cw = ConfigWriter("myconfig.cfg")
     cw.write_section("section_name", z)
     """
+
     def _open(self, filename: str) -> IO:
         return open(file=filename, mode="w", encoding="utf-8")
 
@@ -66,18 +80,29 @@ class ConfigWriter(Config):
         """write section with name to file
         if keys_and_values is None, write section header only"""
         line = self.get_section_header(name)
+        # запись заголовка
         self.write_line(line)
         if keys_and_values is None:
             return
+        # запись содержимого
         for k, v in keys_and_values:
-            self.write_line(self._get_line(k, v))
+            line = self._get_line(k, v)
+            self.write_line(line)
 
         # empty string
         self.write_line("")
 
     def write_line(self, line: str):
         """write only one line(s) to file or stream"""
+        if self.enable_crc:
+            self.hash.update(bytes(line, encoding="utf-8"))
         print(line, file=self._fp)
+
+    def __del__(self):
+        if self.enable_crc:
+            line = self._get_line(my_strings.strCRClabel, self.hash.hexdigest().upper())
+            self.write_line(line)
+        super().__del__()
 
 
 class ConfigReader(Config):
