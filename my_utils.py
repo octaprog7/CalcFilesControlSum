@@ -88,11 +88,11 @@ class DeltaTime:
         return self._stop
 
 
-def settings_from_file(filename: str) -> dict:
+def settings_from_file(filename: str, check_crc: bool = True) -> dict:
     """Read all settings from file and convert it into dict"""
     res = None
     try:
-        cr = config.ConfigReader(filename)
+        cr = config.ConfigReader(filename, check_crc=check_crc)
         res = dict(cr.read(my_strings.str_settings_header))
         if isinstance(res["ext"], str):
             # преобразование строки в список с расширениями!

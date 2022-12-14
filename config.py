@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import IO
 import io
-
+import hashlib  # для расчета хэш
 import my_strings
 
 
@@ -16,9 +16,9 @@ class Config(ABC):
     SEC_NAME_END = "}"
     min_section_name_length = 5
 
-    def __init__(self, filename_or_fileobject: [str, IO], enbl_crc: bool = False):
+    def __init__(self, filename_or_fileobject: [str, IO], check_crc: bool = False):
         # подсчитать crc перед записью настроек или нет!
-        self._enable_crc = enbl_crc
+        self._check_crc = check_crc
         if isinstance(filename_or_fileobject, str):
             self._f_name = filename_or_fileobject
             self._fp = None
@@ -30,17 +30,16 @@ class Config(ABC):
             self._f_name = None
         else:
             raise ValueError(f"Invalid input parameter: {filename_or_fileobject}")
-        if self.enable_crc:
-            import hashlib # для расчета CRC
-            self.hash = hashlib.new("md5")
+        if self._check_crc:
+            self.hash = hashlib.new(my_strings.default_cfg_crc_alg)
 
     @property
-    def enable_crc(self) -> bool:
-        return self._enable_crc
+    def check_crc(self) -> bool:
+        return self._check_crc
 
-    @enable_crc.setter
-    def enable_crc(self, value: bool):
-        self._enable_crc = value
+    @check_crc.setter
+    def check_crc(self, value: bool):
+        self._check_crc = value
 
     @abstractmethod
     def _open(self, filename: str):
@@ -94,12 +93,12 @@ class ConfigWriter(Config):
 
     def write_line(self, line: str):
         """write only one line(s) to file or stream"""
-        if self.enable_crc:
+        if self.check_crc:
             self.hash.update(bytes(line, encoding="utf-8"))
         print(line, file=self._fp)
 
     def __del__(self):
-        if self.enable_crc:
+        if self.check_crc:
             line = self._get_line(my_strings.strCRClabel, self.hash.hexdigest().upper())
             self.write_line(line)
         super().__del__()
@@ -108,6 +107,26 @@ class ConfigWriter(Config):
 class ConfigReader(Config):
     """Read configuration from file"""
     def _open(self, filename: str) -> IO:
+        # наличие CRC проверяется всегда!
+        if self.check_crc:
+            with open(file=filename, mode="r", encoding="utf-8") as cfg_file:
+                crc_read = True
+                lhash = hashlib.new(my_strings.default_cfg_crc_alg)
+                for line in cfg_file:
+                    if line.startswith(my_strings.strCRClabel):
+                        break
+                    # удаляю символы перевода строки, т. к. я их не записывал!
+                    lhash.update(bytes(line.rstrip("\n"), encoding="utf-8"))
+                else:
+                    crc_read = False
+                if crc_read:
+                    crc = line.strip().split(sep=my_strings.strCS_filename_splitter)[1]
+                    calculated = lhash.hexdigest().upper()
+                    # print(f"The hashes matched! From file: {crc}\tCalculated: {calculated}")
+                    if crc != calculated:
+                        raise ValueError(f"File corrupt! Invalid CRC value! "
+                                         f"Read from file: {crc}, calculated: {calculated}.")
+        #
         return open(file=filename, encoding="utf-8")
 
     def read(self, section_name: str = "") -> Iterable[tuple[str, str]]:

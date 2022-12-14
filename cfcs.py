@@ -37,7 +37,7 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
     """разбор файла на имена файлов и их контрольные суммы!
     Функция-генератор"""
     fld = settings["src"]
-    cr = config.ConfigReader(control_sum_filename)
+    cr = config.ConfigReader(control_sum_filename, check_crc=False)
     for cs_from_file, filename_ext in cr.read(my_strings.str_start_files_header):
         try:
             cs = bytes(cs_from_file.strip(), encoding="utf-8")
@@ -117,7 +117,7 @@ def main():
     loc_d["start_time"] = str(dt.start_time)
 
     # сохраняю настройки в stdout
-    cw = config.ConfigWriter(filename_or_fileobject=sys.stdout, enbl_crc=True)
+    cw = config.ConfigWriter(filename_or_fileobject=sys.stdout, check_crc=True)
     cw.write_section(my_strings.str_settings_header, loc_d.items())
 
     total_size = count_files = 0
@@ -126,11 +126,11 @@ def main():
     for file_hash, file_name, file_size in process(args.src, args.ext, args.alg):
         total_size += file_size  # file size
         count_files += 1
-        cw.write_line(f"{str(file_hash).upper()}{my_strings.strCS_filename_splitter}{file_name}")
+        cw.write_line(f"{file_hash}{my_strings.strCS_filename_splitter}{file_name}")
 
     cw.write_section(my_strings.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"Ended: {dt.stop_time}\nFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"Ended: {dt.stop_time}\tFiles: {count_files};\tBytes processed: {total_size}")
     mib_per_sec = total_size / MiB_1 / delta
     cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec:.3f}")
 

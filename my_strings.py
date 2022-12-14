@@ -23,4 +23,5 @@ strCheckingStarted = "Checking started!"
 strCheckingEnded = "Checking ended!"
 
 strParseFileError = "Error parsing file!"
-strCRClabel = "CRC_VAL"
+strCRClabel = "hash_val"
+default_cfg_crc_alg = "md5"
