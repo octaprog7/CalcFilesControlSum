@@ -39,14 +39,8 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
     fld = settings["src"]
     cr = config.ConfigReader(control_sum_filename, check_crc=False)
     for cs_from_file, filename_ext in cr.read(my_strings.str_start_files_header):
-        try:
-            cs = bytes(cs_from_file.strip(), encoding="utf-8")
-            full_file_name = f"{fld}{os.path.sep}{filename_ext.strip()}"
-
-            yield full_file_name, cs.decode("utf-8").upper()
-        except Exception as e:
-            print(my_strings.strParseFileError, control_sum_filename)
-            print(e)
+        full_file_name = f"{fld}{os.path.sep}{filename_ext.strip()}"
+        yield full_file_name, cs_from_file
 
 
 def check_files(control_sum_filename: str) -> tuple:
@@ -107,8 +101,7 @@ def main():
 
     if args.ext:
         # формирование списка расширений для записи в секцию настроек файла
-        loc_ext = args.ext.split(",")
-        args.ext = loc_ext
+        args.ext = args.ext.split(",")
 
     # текущее время
     dt = my_utils.DeltaTime()
