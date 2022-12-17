@@ -19,3 +19,26 @@ to a file by redirecting the output to a file (> filename.ext)
     python3 cfcs.py --src="/home/roman/Изображения" --ext="*.png" > my_images.cs
 ### Checking files for changes
     python3 cfcs.py --check_file="my_images.cs"
+
+## Work example
+my_test.cs file content:
+```
+{SETTINGS}
+check_file	None
+src	/mnt/anydata/tmp
+alg	md5
+ext	['*.img']
+start_time	2022-12-17 14:05:42.637208
+
+{FILES_AND_CONTROL_SUM}
+A981130CF2B7E09F4686DC273CF7187E	test1.img
+CD573CFAACE07E7949BC0C46028904FF	test5.img
+CD573CFAACE07E7949BC0C46028904FF	test3.img
+CD573CFAACE07E7949BC0C46028904FF	test0.img
+C698C87FB53058D493492B61F4C74189	test2.img
+CD573CFAACE07E7949BC0C46028904FF	test4.img
+{INFO AND STATISTICS}
+Ended: 2022-12-17 14:05:58.980157	Files: 6;	Bytes processed: 9663676416
+Processing speed [MiB/sec]: 563.913
+hash_val	DD44D3D71819D7EE6A5622544AE1905E
+```
