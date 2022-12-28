@@ -44,14 +44,15 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
 
 
 def check_files(control_sum_filename: str) -> tuple:
-    """comparison of the current checksum of the file and the checksum read from the file.
-    Функция-генератор"""
+    """comparison of the current checksum of the file and the checksum read from the file."""
     settings = my_utils.settings_from_file(control_sum_filename)
-    total_tested, modified_files_count, access_errors = 0, 0, 0
+    total_tested, modified_files_count, access_errors, total_size = 0, 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
         curr_cs = None
         try:
             curr_cs = my_utils.get_hash_file(loc_fn)
+            # вычисляю общий размер проверенных файлов в байтах
+            total_size += my_utils.get_file_stat(loc_fn).st_size
         except OSError as e:
             access_errors += 1
             print(e)
@@ -60,7 +61,7 @@ def check_files(control_sum_filename: str) -> tuple:
             modified_files_count += 1
             print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
 
-    return total_tested, modified_files_count, access_errors
+    return total_tested, modified_files_count, access_errors, total_size
 
 
 def main():
@@ -87,10 +88,15 @@ def main():
 
     if args.check_file:
         print(my_strings.strCheckingStarted)
+        # текущее время
+        dt = my_utils.DeltaTime()
         # проверка файлов по их контрольным суммам
-        total, modified, access_err = check_files(args.check_file)
+        total_files, modified, access_err, total_size = check_files(args.check_file)
+        delta = dt.delta()  # in second [float]
+        mib_per_sec = total_size / MiB_1 / delta
         # Итоги проверки файлов по их контрольным суммам
-        print(f"Total files checked: {total}\tModified files: {modified}\tI/O errors: {access_err}")
+        print(f"Total files checked: {total_files}\tModified files: {modified}\tI/O errors: {access_err}")
+        print(f"Checking speed [MiB/sec]: {mib_per_sec:.3f}")
         sys.exit()  # выход
 
     if args.src:
