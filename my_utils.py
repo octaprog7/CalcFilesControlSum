@@ -4,12 +4,11 @@
 import hashlib
 import pathlib
 import datetime
-
+import os
 import my_strings
 import config
 
 
-# def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096, as_hex_digest=True):
 def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096) -> str:
     """return hash of file"""
     h = hashlib.new(algorithm)
@@ -101,3 +100,9 @@ def settings_from_file(filename: str, check_crc: bool = True) -> dict:
     except OSError as e:
         print(f"{my_strings.strOsError}: {e}")
     return res
+
+
+def get_file_stat(filename: str) -> os.stat_result:
+    """Return statistic of file. Pls. see: https://docs.python.org/3.9/library/os.html#os.stat_result"""
+    path = pathlib.Path(filename)
+    return path.stat()
