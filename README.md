@@ -50,6 +50,7 @@ hash_val	DD44D3D71819D7EE6A5622544AE1905E
 ```
 ...:~$ Checking started!
 Total files checked: 6	Modified files: 0	I/O errors: 0
+Checking speed [MiB/sec]: 546.237
 ...:~$  
 
 ```
