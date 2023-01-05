@@ -54,3 +54,5 @@ Checking speed [MiB/sec]: 546.237
 ...:~$  
 
 ```
+PyPi
+https://pypi.org/project/calc-files-control-sum/
