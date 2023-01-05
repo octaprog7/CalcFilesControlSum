@@ -44,7 +44,7 @@ hash_val	DD44D3D71819D7EE6A5622544AE1905E
 ```
 
 ## Checking files for changes
-    python3 cfcs.py --check_file="my_test.cs"
+    cfcs --check_file="my_test.cs"
 
 ### Result
 ```
