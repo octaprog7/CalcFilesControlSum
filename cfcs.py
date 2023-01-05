@@ -107,7 +107,8 @@ def main():
 
     if args.ext:
         # формирование списка расширений для записи в секцию настроек файла
-        args.ext = args.ext.split(",")
+        args.ext = args.ext.replace(" ", "")   # удаляю все пробелы из строки
+        args.ext = args.ext.split(",")  # создаю список
 
     # текущее время
     dt = my_utils.DeltaTime()
