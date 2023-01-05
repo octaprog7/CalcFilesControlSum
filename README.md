@@ -17,6 +17,7 @@ to a file by redirecting the output to a file (> filename.ext)
 
 ## Make check folder file
     cfcs --src="/home/roman/Изображения" --ext="*.png" > my_images.cs
+
 ### Checking files for changes
     cfcs --check_file="my_images.cs"
 
