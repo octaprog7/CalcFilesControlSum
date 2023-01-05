@@ -16,9 +16,9 @@ to a file by redirecting the output to a file (> filename.ext)
 - ```cfcs --check_file==/home/previously_created_file.ext  (check files in folder).```
 
 ## Make check folder file
-    python3 cfcs.py --src="/home/roman/Изображения" --ext="*.png" > my_images.cs
+    cfcs --src="/home/roman/Изображения" --ext="*.png" > my_images.cs
 ### Checking files for changes
-    python3 cfcs.py --check_file="my_images.cs"
+    cfcs --check_file="my_images.cs"
 
 ## Work example
 my_test.cs file content:
