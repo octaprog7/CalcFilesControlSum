@@ -55,4 +55,4 @@ Checking speed [MiB/sec]: 546.237
 ```
 ## PyPi
 https://pypi.org/project/calc-files-control-sum/
-After installation use rmdup --help instead of remove_duplicates
+
