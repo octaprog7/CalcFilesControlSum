@@ -48,18 +48,19 @@ def check_files(control_sum_filename: str) -> tuple:
     settings = my_utils.settings_from_file(control_sum_filename)
     total_tested, modified_files_count, access_errors, total_size = 0, 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
-        curr_cs = None
+        # curr_cs = None
         try:
             curr_cs = my_utils.get_hash_file(loc_fn)
             # вычисляю общий размер проверенных файлов в байтах
             total_size += my_utils.get_file_stat(loc_fn).st_size
+            total_tested += 1
+            if curr_cs != old_cs:
+                modified_files_count += 1
+                print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
         except OSError as e:
             access_errors += 1
             print(e)
-        total_tested += 1
-        if curr_cs != old_cs:
-            modified_files_count += 1
-            print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
+            continue
 
     return total_tested, modified_files_count, access_errors, total_size
 
