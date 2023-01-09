@@ -73,12 +73,13 @@ def main():
                                      epilog="""If the source folder is not specified, 
                                                     current working directory used as source folder!""")
 
-    parser.add_argument("--check_file", type=str, help="Name of the source file of checksums for checking files.\
+    parser.add_argument("-c", "--check_file", type=str,
+                        help="Name of the source file of checksums for checking files.\
             Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
-    parser.add_argument("--src", type=str, help="Folder in which checksums of files are calculated.")
-    parser.add_argument("--alg", type=str, help="Algorithm for calculating the checksum. For example \
+    parser.add_argument("-s", "--src", type=str, help="Folder in which checksums of files are calculated.")
+    parser.add_argument("-a", "--alg", type=str, help="Algorithm for calculating the checksum. For example \
         MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
-    parser.add_argument("--ext", type=str, help='Pattern string for filename matching check! \
+    parser.add_argument("-e", "--ext", type=str, help='Pattern string for filename matching check! \
         Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.zip")
 
     args = parser.parse_args()
