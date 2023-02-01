@@ -5,10 +5,18 @@ To later check the files for changes, you need to save this information
 to a file by redirecting the output to a file (> filename.ext)
 
 ## Command string parameters:
-  - --src - the checksums of the files in this folder are calculated. Default - current working dir.
-  - --alg - for calc control sum file (SHA1, SHA224, SHA256, SHA384, SHA512, MD5). Default - MD5
-  - --ext - File name templates, according to which the checksum of the file will be calculated.
-  - --check_file - Name of the source file of checksums for checking files. If this option is defined, then the rest do not need to be defined!
+  - -h, --help            show this help message and exit
+  - -c CHECK_FILE, --check_file CHECK_FILE
+                        Name of the source file of checksums for checking
+                        files. Type: cfcs [opt] > filename.ext to produce
+                        check file filename.ext in current working dir!
+  - -s SRC, --src SRC     Folder in which checksums of files are calculated.
+  - -a ALG, --alg ALG     Algorithm for calculating the checksum. For example
+                        MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default
+                        value: md5
+  - -e EXT, --ext EXT     Pattern string for filename matching check! Filters
+                        out files subject to checksum calculation. For
+                        example: "*.zip,*.rar,*.txt"
   
 ## Example: 
 - ```cfcs --src=/home/username --alg=sha1 --ext="*.rar,*.avi,*.bmp" (writing checksum information to stdout).```
