@@ -6,8 +6,9 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import IO
 import io
-import hashlib  # для расчета хэш
+import hashlib
 import calc_files_control_sum.my_strings as my_strings
+import calc_files_control_sum.str_without_trans as swtrans
 
 
 class Config(ABC):
@@ -29,9 +30,9 @@ class Config(ABC):
             self._fp = filename_or_fileobject
             self._f_name = None
         else:
-            raise ValueError(f"Invalid input parameter: {filename_or_fileobject}")
+            raise ValueError(f"{my_strings.strInvalidInputParameter}: {filename_or_fileobject}")
         if self._check_crc:
-            self.hash = hashlib.new(my_strings.default_cfg_crc_alg)
+            self.hash = hashlib.new(swtrans.default_cfg_crc_alg)
 
     @property
     def check_crc(self) -> bool:
@@ -73,7 +74,7 @@ class ConfigWriter(Config):
     @staticmethod
     def _get_line(key: str, value: str) -> str:
         """for class internal use"""
-        return f"{str(key)}{my_strings.strCS_filename_splitter}{str(value)}"
+        return f"{str(key)}{swtrans.strCS_filename_splitter}{str(value)}"
 
     def write_section(self, name: str, keys_and_values: Iterable[tuple[str, str]] or None):
         """write section with name to file
@@ -99,7 +100,7 @@ class ConfigWriter(Config):
 
     def __del__(self):
         if self.check_crc:
-            line = self._get_line(my_strings.strCRClabel, self.hash.hexdigest().upper())
+            line = self._get_line(swtrans.strCRClabel, self.hash.hexdigest().upper())
             self.write_line(line)
         super().__del__()
 
@@ -107,25 +108,23 @@ class ConfigWriter(Config):
 class ConfigReader(Config):
     """Read configuration from file"""
     def _open(self, filename: str) -> IO:
-        # наличие CRC проверяется всегда!
         if self.check_crc:
             with open(file=filename, mode="r", encoding="utf-8") as cfg_file:
                 crc_read = True
-                lhash = hashlib.new(my_strings.default_cfg_crc_alg)
+                lhash = hashlib.new(swtrans.default_cfg_crc_alg)
                 for line in cfg_file:
-                    if line.startswith(my_strings.strCRClabel):
+                    if line.startswith(swtrans.strCRClabel):
                         break
                     # удаляю символы перевода строки, т. к. я их не записывал!
                     lhash.update(bytes(line.rstrip("\n"), encoding="utf-8"))
                 else:
                     crc_read = False
                 if crc_read:
-                    crc = line.strip().split(sep=my_strings.strCS_filename_splitter)[1]
-                    calculated = lhash.hexdigest().upper()
+                    crc = line.strip().split(sep=swtrans.strCS_filename_splitter)[1]
+                    calcul = lhash.hexdigest().upper()
                     # print(f"The hashes matched! From file: {crc}\tCalculated: {calculated}")
-                    if crc != calculated:
-                        raise ValueError(f"File corrupt! Invalid CRC value! "
-                                         f"Read from file: {crc}, calculated: {calculated}.")
+                    if crc != calcul:
+                        raise ValueError(f"{my_strings.strInvalidCrcValue}: {crc}, {my_strings.strCalcul}: {calcul}.")
         #
         return open(file=filename, encoding="utf-8")
 
@@ -139,7 +138,7 @@ class ConfigReader(Config):
         """
         current_section_name = None
         for line in self._fp:
-            parts = line.strip().split(sep=my_strings.strCS_filename_splitter)
+            parts = line.strip().split(sep=swtrans.strCS_filename_splitter)
             key, value = parts[0].strip(), None
             if not key:
                 continue  # empty string
@@ -148,7 +147,7 @@ class ConfigReader(Config):
             if value is None:  # key only:
                 if key.startswith(Config.SEC_NAME_START) and key.endswith(Config.SEC_NAME_END):
                     if len(key) < Config.min_section_name_length:
-                        raise ValueError(f"Invalid section name length!: {key}")
+                        raise ValueError(f"{my_strings.strInvalidSectionNameLength}: {key}")
                     current_section_name = key[1:-1]
                     if not section_name:
                         yield current_section_name  # return section name only!

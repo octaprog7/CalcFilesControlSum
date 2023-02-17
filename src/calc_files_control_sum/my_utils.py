@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """service utils"""
 
+import os
 import hashlib
 import pathlib
 import datetime
-import os
 import calc_files_control_sum.my_strings as my_strings
+import calc_files_control_sum.str_without_trans as swtrans
 import calc_files_control_sum.config as config
 
 
@@ -92,7 +93,7 @@ def settings_from_file(filename: str, check_crc: bool = True) -> dict:
     res = None
     try:
         cr = config.ConfigReader(filename, check_crc=check_crc)
-        res = dict(cr.read(my_strings.str_settings_header))
+        res = dict(cr.read(swtrans.str_settings_header))
         if isinstance(res["ext"], str):
             # преобразование строки в список с расширениями!
             lst = res["ext"].replace("[", "").replace("]", "").split(sep=",")

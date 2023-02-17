@@ -1,27 +1,47 @@
-"""any strings for util"""
+"""any strings for project"""
 
-strFolderHandling = "Folder handling"
-strFEF = "File extension filter"
-strCCA = "Checksum calculation algorithm"
+# strFolderHandling = "Folder handling"             # not used
+# strFEF = "File extension filter"                  # not used
+# strCCA = "Checksum calculation algorithm"         # not used
+# head_header = "#"                                 # not used
+# strFileNotModified = "File is not modified."      # not used
+# strFileNotFound = "File not found!"               # not used
+# strCheckingEnded = "Checking ended!"              # not used
+# strParseFileError = "Error parsing file!"         # not used
 
-head_header = "#"
-str_start_files_header = f"FILES_AND_CONTROL_SUM"
-str_settings_header = "SETTINGS"
-str_info_section = "INFO AND STATISTICS"
-strCS_filename_splitter = "\t"
-strKeyValueSeparator = ":"
+# переводить
 
-strInvalidSrcFld = "Invalid source folder!"
-strInvalidCheckFn = "Invalid check file name!"
-strOsError = "Operational System Error!"
+# для cfcs.py
+strInvalidSrcFld = "Invalid source folder!"             # used in cfcs.py
+strInvalidCheckFn = "Invalid check file name!"          # used in cfcs.py
+strFileModified = "Attention! The file has been modified"   # used in cfcs.py
+strCheckingStarted = "Checking started!"                    # used in cfcs.py
 
-strFileNotModified = "File is not modified."
-strFileModified = "Attention! The file has been modified"
-strFileNotFound = "File not found!"
+strDescription = "Utility to Calc Files Control Sum in specified folder."   # used in cfcs.py
+strEpilog = "If the source folder is not specified, current working directory used as source folder!"  # used in cfcs.py
+strArgCheckFile = "Name of the source file of checksums for checking files.\
+            Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!"  # u in  cfcs.py
+strArgSrc = "Folder in which checksums of files are calculated."    # used in cfcs.py
+strArgAlg = "Algorithm for calculating the checksum. For example \
+        MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5"  # used in cfcs.py
+strArgExt = 'Pattern string for filename matching check! \
+        Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"'    # used in cfcs.py
 
-strCheckingStarted = "Checking started!"
-strCheckingEnded = "Checking ended!"
+# для cfcs.py
+strCheckingSpeed = "Checking speed [MiB/sec]"
+strTotalFilesChecked = "Total files checked"
+strTotalFilesMod = "Modified files"
+strIOErrors = "I/O errors"
+strProcSpeed = "Processing speed [MiB/sec]"
+strEnded = "Ended"
+strFiles = "Files"
+strBytesProcessed = "Bytes processed"
 
-strParseFileError = "Error parsing file!"
-strCRClabel = "hash_val"
-default_cfg_crc_alg = "md5"
+# для config.py
+strInvalidInputParameter = "Invalid input parameter"
+strInvalidCrcValue = "File corrupt! Invalid CRC value! Read from file"
+strCalcul = "calculated"
+strInvalidSectionNameLength = "Invalid section name length!"
+
+# для my_utils.py
+strOsError = "Operational System Error!"                    # used in my_utils.py
