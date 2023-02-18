@@ -1,15 +1,6 @@
 """any strings for project"""
 
-# strFolderHandling = "Folder handling"             # not used
-# strFEF = "File extension filter"                  # not used
-# strCCA = "Checksum calculation algorithm"         # not used
-# head_header = "#"                                 # not used
-# strFileNotModified = "File is not modified."      # not used
-# strFileNotFound = "File not found!"               # not used
-# strCheckingEnded = "Checking ended!"              # not used
-# strParseFileError = "Error parsing file!"         # not used
-
-# переводить
+# переводимые на другие языки строки
 
 # для cfcs.py
 strInvalidSrcFld = "Invalid source folder!"             # used in cfcs.py
