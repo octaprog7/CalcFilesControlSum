@@ -2,9 +2,9 @@
 
 # переводимые на другие языки строки
 
-# для cfcs.py
+# для cfcs.py                EN
 strInvalidSrcFld = "Invalid source folder!"             # used in cfcs.py
-strInvalidCheckFn = "Invalid check file name!"          # used in cfcs.py
+strInvalidCheckFn = "Invalid name of check file!"          # used in cfcs.py
 strFileModified = "Attention! The file has been modified"   # used in cfcs.py
 strCheckingStarted = "Checking started!"                    # used in cfcs.py
 
