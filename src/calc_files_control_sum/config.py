@@ -124,7 +124,8 @@ class ConfigReader(Config):
                     calcul = lhash.hexdigest().upper()
                     # print(f"The hashes matched! From file: {crc}\tCalculated: {calculated}")
                     if crc != calcul:
-                        raise ValueError(f"{my_strings.strInvalidCrcValue}: {crc}, {my_strings.strCalcul}: {calcul}.")
+                        raise ValueError(f"{filename}. {my_strings.strInvalidCrcValue}: {crc}, "
+                                         f"{my_strings.strCalcul}: {calcul}.")
         #
         return open(file=filename, encoding="utf-8")
 
