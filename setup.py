@@ -15,6 +15,7 @@ setuptools.setup(
     url="https://github.com/octaprog7/CalcFilesControlSum",
     packages = setuptools.find_packages(where='src'),
     package_dir = {'': 'src'},
+    package_data={"": ["*.csv", "*.zzz"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
