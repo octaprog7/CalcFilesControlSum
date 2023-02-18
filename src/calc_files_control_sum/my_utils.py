@@ -8,6 +8,7 @@ import datetime
 import calc_files_control_sum.my_strings as my_strings
 import calc_files_control_sum.str_without_trans as swtrans
 import calc_files_control_sum.config as config
+import csv
 
 
 def get_hash_file(full_path_to_file: str, algorithm="md5", buff_size=4096) -> str:
@@ -107,3 +108,21 @@ def get_file_stat(filename: str) -> os.stat_result:
     """Return statistic of file. Pls. see: https://docs.python.org/3.9/library/os.html#os.stat_result"""
     path = pathlib.Path(filename)
     return path.stat()
+
+
+def get_fields_by_names(csv_filename: str, column_names: [tuple, list], delimiter: str = ',') -> tuple:
+    """Итератор, который возвращает за каждый вызов кортеж из полей csv файла, имена которых (первая строка),
+    в виде строк, содержит последовательность field_names"""
+    with open(csv_filename, mode='r', newline='') as csv_file:
+        row_reader = csv.reader(csv_file, delimiter=delimiter)
+        _b = True
+        res = list()
+        for _row in row_reader:
+            if _b:
+                column_indexes = tuple([_row.index(column_name) for column_name in column_names])
+                _b = False
+                continue
+            t = tuple([_row[_index] for _index in column_indexes])
+            yield t
+        #
+        return tuple(res)
