@@ -1,38 +1,43 @@
 """any strings for project"""
+import locale
+import calc_files_control_sum.my_int as my_int
+
+# текущий язык
+curr_lang = locale.getdefaultlocale()[0][:2].upper()
+# для получения строк
+_I = my_int.Internationalization("translated.csv", curr_lang)
+# print("curr_lang", curr_lang)
 
 # переводимые на другие языки строки
 
 # для cfcs.py                EN
-strInvalidSrcFld = "Invalid source folder!"             # used in cfcs.py
-strInvalidCheckFn = "Invalid name of check file!"          # used in cfcs.py
-strFileModified = "Attention! The file has been modified"   # used in cfcs.py
-strCheckingStarted = "Checking started!"                    # used in cfcs.py
+strInvalidSrcFld = _I("strInvalidSrcFld")               # used in cfcs.py
+strInvalidCheckFn = _I("strInvalidCheckFn")             # used in cfcs.py
+strFileModified = _I("strFileModified")                 # used in cfcs.py
+strCheckingStarted = _I("strCheckingStarted")           # used in cfcs.py
 
-strDescription = "Utility to Calc Files Control Sum in specified folder."   # used in cfcs.py
-strEpilog = "If the source folder is not specified, current working directory used as source folder!"  # used in cfcs.py
-strArgCheckFile = "Name of the source file of checksums for checking files.\
-            Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!"  # u in  cfcs.py
-strArgSrc = "Folder in which checksums of files are calculated."    # used in cfcs.py
-strArgAlg = "Algorithm for calculating the checksum. For example \
-        MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5"  # used in cfcs.py
-strArgExt = 'Pattern string for filename matching check! \
-        Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"'    # used in cfcs.py
+strDescription = _I("strDescription")   # used in cfcs.py
+strEpilog = _I("strEpilog")             # used in cfcs.py
+strArgCheckFile = _I("strArgCheckFile")        # used in  cfcs.py
+strArgSrc = _I("strArgSrc")     # used in cfcs.py
+strArgAlg = _I("strArgAlg")     # used in cfcs.py
+strArgExt = _I("strArgExt")     # used in cfcs.py
 
 # для cfcs.py
-strCheckingSpeed = "Checking speed [MiB/sec]"
-strTotalFilesChecked = "Total files checked"
-strTotalFilesMod = "Modified files"
-strIOErrors = "I/O errors"
-strProcSpeed = "Processing speed [MiB/sec]"
-strEnded = "Ended"
-strFiles = "Files"
-strBytesProcessed = "Bytes processed"
+strCheckingSpeed = _I("strCheckingSpeed")
+strTotalFilesChecked = _I("strTotalFilesChecked")
+strTotalFilesMod = _I("strTotalFilesMod")
+strIOErrors = _I("strIOErrors")
+strProcSpeed = _I("strProcSpeed")
+strEnded = _I("strEnded")
+strFiles = _I("strFiles")
+strBytesProcessed = _I("strBytesProcessed")
 
 # для config.py
-strInvalidInputParameter = "Invalid input parameter"
-strInvalidCrcValue = "File corrupt! Invalid CRC value! Read from file"
-strCalcul = "calculated"
-strInvalidSectionNameLength = "Invalid section name length!"
+strInvalidInputParameter = _I("strInvalidInputParameter")
+strInvalidCrcValue = _I("strInvalidCrcValue")
+strCalcul = _I("strCalcul")
+strInvalidSectionNameLength = _I("strInvalidSectionNameLength")
 
 # для my_utils.py
-strOsError = "Operational System Error!"                    # used in my_utils.py
+strOsError = _I("strOsError")
