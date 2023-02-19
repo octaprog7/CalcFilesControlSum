@@ -2,11 +2,12 @@
 import locale
 import calc_files_control_sum.my_int as my_int
 
+# чтобы активировать пользовательскую locale! Для форматирования даты и времени!
+# locale.setlocale(locale.LC_ALL, '')
 # текущий язык
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
 # для получения строк
 _I = my_int.Internationalization("translated.csv", curr_lang)
-# print("curr_lang", curr_lang)
 
 # переводимые на другие языки строки
 
