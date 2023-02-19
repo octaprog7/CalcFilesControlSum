@@ -100,7 +100,7 @@ def main():
 
     if args.src:
         if not my_utils.is_folder_exist(args.src):
-            raise ValueError(f"{my_strings.strInvalidSrcFld}: {args.src}")
+            raise ValueError(f"{my_strings.strInvalidSrcFld} {args.src}")
     else:
         args.src = src_folder
 
