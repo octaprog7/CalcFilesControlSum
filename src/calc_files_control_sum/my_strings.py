@@ -1,7 +1,6 @@
 """any strings for project"""
 import os
 import pathlib
-import sys
 import locale
 import calc_files_control_sum.my_int as my_int
 
@@ -10,7 +9,8 @@ import calc_files_control_sum.my_int as my_int
 # текущий язык локали
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
 # полный путь к файлу
-src_folder = pathlib.Path(sys.argv[0]).parent
+src_folder = pathlib.Path(__file__).parent
+print("src_folder", src_folder)
 # чтение интернационализированных строк
 _I = my_int.Internationalization(f"{src_folder}{os.path.sep}translated.csv", curr_lang)
 
