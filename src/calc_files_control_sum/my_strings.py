@@ -42,9 +42,4 @@ strInvalidSectionNameLength = _I("strInvalidSectionNameLength")
 
 # для my_utils.py
 strOsError = _I("strOsError")
-'''
-# заполнение словаря имен строковых переменных с префиксом "str"
-curr_vars = {key: value for (key, value) in locals().items() if key.startswith("str")}
-for key in curr_vars:
-    curr_vars[key] = _I(key)    # присвоение локализованного значения, считанного из CSV-файла, переменной типа str!
-'''
+
