@@ -55,11 +55,12 @@ hash_val	DD44D3D71819D7EE6A5622544AE1905E
 
 ### Result
 ```
-...:~$ Checking started!
-Total files checked: 6	Modified files: 0	I/O errors: 0
-Checking speed [MiB/sec]: 546.237
-...:~$  
-
+Checking files by their checksums has begun!
+The file has been verified. No changes found.: /mnt/anydata/CodeComposerStudio/CCS12.1.0.00007_linux-x64.tar.gz
+Total files checked: 1
+Number of modified files: 0
+Number of I/O errors: 0
+File scan speed [MiB/s]: 82.969
 ```
 ## PyPi
 https://pypi.org/project/calc-files-control-sum/
