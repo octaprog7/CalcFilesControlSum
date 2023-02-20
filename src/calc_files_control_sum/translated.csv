@@ -15,10 +15,11 @@
 "strIOErrors","Number of I/O errors","Кол-во ошибок ввода/вывода","Anzahl I/O-Fehler","Número de errores de E/S","Nombre d'erreurs d'E/S"
 "strProcSpeed","Processing speed [MiB/s]","Скорость обработки [МиБ/с]","Verarbeitungsgeschwindigkeit [MiB/s]","Velocidad de procesamiento [MiB/s]","Vitesse de traitement [Mio/s]"
 "strEnded","Work completed","Работа завершена","Arbeit abgeschlossen","Trabajo completado","Travaux achevés"
-"strFiles","Number of files","Кол-во файлов","Anzahl Dateien","Número de archivos","Nombre de fichiers"
+"strFiles","Number of files","Кол-во файлов","Anzahl Dateien","Número de archivos",Nombre de fichiers
 "strBytesProcessed","Bytes processed","Байтов обработано","Verarbeitete Bytes","Bytes procesados","Octets traités"
 "strInvalidInputParameter","Invalid input parameter","Неверный входной параметр","Ungültiger Eingabeparameter","Parámetro de entrada no válido","Paramètre d'entrée invalide"
 "strInvalidCrcValue","The file is damaged! Invalid CRC value! Read from file","Файл поврежден! Недопустимое значение CRC! Считано из файла","Die Datei ist beschädigt! Ungültiger CRC-Wert! Aus Datei lesen","El archivo está dañado! ¡Valor CRC no válido! Leer del archivo","Le fichier est endommagé ! Valeur CRC invalide! Lire à partir du fichier"
 "strCalcul","CRC calculated from file content","CRC, вычисленная по содержимому файла","Aus Dateiinhalt berechneter CRC","CRC calculado a partir del contenido del archivo","CRC calculé à partir du contenu du fichier"
 "strInvalidSectionNameLength","Invalid section name length!","Недопустимая длина имени раздела!","Ungültige Länge des Abschnittsnamens!","La longitud del nombre de la sección no es válida!","Longueur du nom de section non valide!"
-"strOsError","Operational System Error!","Ошибка операционной системы!","Betriebssystemfehler!","Error del sistema operativo!","Erreur système opérationnel!"
+"strOsError","Operational System Error!","Ошибка операционной системы!",Betriebssystemfehler!,"Error del sistema operativo!","Erreur système opérationnel!"
+strFileChecked,The file has been verified. No changes found.,файл был проверен. Изменений не найдено.,Die Datei wurde überprüft. Keine Änderungen gefunden.,El archivo ha sido verificado. No se encontraron cambios.,Le dossier a été vérifié. Aucune modification trouvée.
