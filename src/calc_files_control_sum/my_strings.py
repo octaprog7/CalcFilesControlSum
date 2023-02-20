@@ -11,7 +11,7 @@ _I = my_int.Internationalization("translated.csv", curr_lang)
 
 # переводимые на другие языки строки
 
-# для cfcs.py                EN
+# для cfcs.py
 strInvalidSrcFld = _I("strInvalidSrcFld")               # used in cfcs.py
 strInvalidCheckFn = _I("strInvalidCheckFn")             # used in cfcs.py
 strFileModified = _I("strFileModified")                 # used in cfcs.py
