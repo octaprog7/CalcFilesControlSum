@@ -1,13 +1,17 @@
 """any strings for project"""
+import os
+import sys
 import locale
 import calc_files_control_sum.my_int as my_int
+import calc_files_control_sum.my_utils as my_utils
 
 # чтобы активировать пользовательскую locale! Для форматирования даты и времени!
 # locale.setlocale(locale.LC_ALL, '')
 # текущий язык локали
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
+src_folder = my_utils.get_owner_folder_path(sys.argv[0])
 # для получения строк
-_I = my_int.Internationalization("translated.csv", curr_lang)
+_I = my_int.Internationalization(f"{src_folder}{os.pathsep}translated.csv", curr_lang)
 
 # переводимые на другие языки строки
 
