@@ -42,4 +42,3 @@ strInvalidSectionNameLength = _I("strInvalidSectionNameLength")
 
 # для my_utils.py
 strOsError = _I("strOsError")
-
