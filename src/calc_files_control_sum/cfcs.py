@@ -56,6 +56,7 @@ def check_files(control_sum_filename: str) -> tuple:
             # вычисляю общий размер проверенных файлов в байтах
             total_size += my_utils.get_file_stat(loc_fn).st_size
             total_tested += 1
+            print(f"{my_strings.strFileChecked}: {loc_fn}")     # сообщаю пользователю, что файл был проверен
             if curr_cs != old_cs:
                 modified_files_count += 1
                 print(f"{my_strings.strFileModified}{swtrans.strKeyValueSeparator} {loc_fn}")
@@ -100,7 +101,7 @@ def main():
 
     if args.src:
         if not my_utils.is_folder_exist(args.src):
-            raise ValueError(f"{my_strings.strInvalidSrcFld}: {args.src}")
+            raise ValueError(f"{my_strings.strInvalidSrcFld} {args.src}")
     else:
         args.src = src_folder
 

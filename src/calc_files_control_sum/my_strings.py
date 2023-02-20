@@ -1,16 +1,21 @@
 """any strings for project"""
+import os
+import pathlib
 import locale
 import calc_files_control_sum.my_int as my_int
 
-# текущий язык
+# чтобы активировать пользовательскую locale! Для форматирования даты и времени!
+# locale.setlocale(locale.LC_ALL, '')
+# текущий язык локали
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
-# для получения строк
-_I = my_int.Internationalization("translated.csv", curr_lang)
-# print("curr_lang", curr_lang)
+# полный путь к файлу
+src_folder = pathlib.Path(__file__).parent
+# чтение интернационализированных строк
+_I = my_int.Internationalization(f"{src_folder}{os.path.sep}translated.csv", curr_lang)
 
 # переводимые на другие языки строки
 
-# для cfcs.py                EN
+# для cfcs.py
 strInvalidSrcFld = _I("strInvalidSrcFld")               # used in cfcs.py
 strInvalidCheckFn = _I("strInvalidCheckFn")             # used in cfcs.py
 strFileModified = _I("strFileModified")                 # used in cfcs.py
@@ -41,3 +46,4 @@ strInvalidSectionNameLength = _I("strInvalidSectionNameLength")
 
 # для my_utils.py
 strOsError = _I("strOsError")
+strFileChecked = _I("strFileChecked")

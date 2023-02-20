@@ -1,4 +1,5 @@
-"""реализация интернационализации"""
+"""реализация интернационализации.
+Если что, я знаю про gettext"""
 import csv
 
 
@@ -8,16 +9,11 @@ def _get_fields_by_names(csv_filename: str, column_names: [tuple, list], delimit
     with open(csv_filename, mode='r', newline='') as csv_file:
         row_reader = csv.reader(csv_file, delimiter=delimiter)
         _b = True
-        res = list()
         for _row in row_reader:
             if _b:
                 column_indexes = tuple([_row.index(column_name) for column_name in column_names])
                 _b = False
-                continue
-            t = tuple([_row[_index] for _index in column_indexes])
-            yield t
-        #
-        return tuple(res)
+            yield tuple([_row[_index] for _index in column_indexes])
 
 
 class Internationalization:
@@ -33,11 +29,15 @@ class Internationalization:
             for fields in _get_fields_by_names(csv_filename, ("strID", lang.upper())):
                 self._str_and_vals[fields[0]] = fields[1]
         except IndexError:
-            self._str_and_vals.clear()
+            pass
         except LookupError:
-            self._str_and_vals.clear()
+            pass
+        except ValueError:
+            pass
         else:
             return  # исключения не было!
+        # было исключение, возможно задан неверный язык локализации
+        self._str_and_vals.clear()
         # последняя попытка с языком по умолчанию
         for fields in _get_fields_by_names(csv_filename, ("strID", default_lang)):
             self._str_and_vals[fields[0]] = fields[1]
