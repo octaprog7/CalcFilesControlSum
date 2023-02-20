@@ -11,7 +11,7 @@ import calc_files_control_sum.my_int as my_int
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
 # полный путь к файлу
 src_folder = pathlib.Path(sys.argv[0]).parent
-# для получения строк
+# чтение интернационализированных строк
 _I = my_int.Internationalization(f"{src_folder}{os.path.sep}translated.csv", curr_lang)
 
 # переводимые на другие языки строки
