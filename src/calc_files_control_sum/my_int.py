@@ -13,9 +13,7 @@ def _get_fields_by_names(csv_filename: str, column_names: [tuple, list], delimit
             if _b:
                 column_indexes = tuple([_row.index(column_name) for column_name in column_names])
                 _b = False
-                continue
-            t = tuple([_row[_index] for _index in column_indexes])
-            yield t
+            yield tuple([_row[_index] for _index in column_indexes])
         #
         return tuple(res)
 
