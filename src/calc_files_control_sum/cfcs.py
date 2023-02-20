@@ -11,6 +11,7 @@ from collections.abc import Iterable
 
 import calc_files_control_sum.my_utils as my_utils
 import calc_files_control_sum.my_strings as my_strings
+import calc_files_control_sum.str_without_trans as swtrans
 import calc_files_control_sum.config as config
 
 MiB_1 = 1024*1024
@@ -37,26 +38,28 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
     """разбор файла на имена файлов и их контрольные суммы!
     Функция-генератор"""
     fld = settings["src"]
+    # вычислять CRC не нужно!
     cr = config.ConfigReader(control_sum_filename, check_crc=False)
-    for cs_from_file, filename_ext in cr.read(my_strings.str_start_files_header):
+    for cs_from_file, filename_ext in cr.read(swtrans.str_start_files_header):
         full_file_name = f"{fld}{os.path.sep}{filename_ext.strip()}"
         yield full_file_name, cs_from_file
 
 
 def check_files(control_sum_filename: str) -> tuple:
     """comparison of the current checksum of the file and the checksum read from the file."""
-    settings = my_utils.settings_from_file(control_sum_filename)
+    # вызов my_utils.settings_from_file проверяет контрольную сумму файла настроек после его открытия
+    settings = my_utils.settings_from_file(control_sum_filename, check_crc=True)
     total_tested, modified_files_count, access_errors, total_size = 0, 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
-        # curr_cs = None
         try:
             curr_cs = my_utils.get_hash_file(loc_fn)
             # вычисляю общий размер проверенных файлов в байтах
             total_size += my_utils.get_file_stat(loc_fn).st_size
             total_tested += 1
+            print(f"{my_strings.strFileChecked}: {loc_fn}")     # сообщаю пользователю, что файл был проверен
             if curr_cs != old_cs:
                 modified_files_count += 1
-                print(f"{my_strings.strFileModified}{my_strings.strKeyValueSeparator} {loc_fn}")
+                print(f"{my_strings.strFileModified}{swtrans.strKeyValueSeparator} {loc_fn}")
         except OSError as e:
             access_errors += 1
             print(e)
@@ -69,18 +72,11 @@ def main():
     """Главная функция"""
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
 
-    parser = argparse.ArgumentParser(description="utility to Calc Files Control Sum in specified folder.",
-                                     epilog="""If the source folder is not specified, 
-                                                    current working directory used as source folder!""")
-
-    parser.add_argument("-c", "--check_file", type=str,
-                        help="Name of the source file of checksums for checking files.\
-            Type: cfcs [opt] > filename.ext to produce check file filename.ext in current working dir!")
-    parser.add_argument("-s", "--src", type=str, help="Folder in which checksums of files are calculated.")
-    parser.add_argument("-a", "--alg", type=str, help="Algorithm for calculating the checksum. For example \
-        MD5, SHA1, SHA224, SHA256, SHA384, SHA512. Default value: md5", default="md5")
-    parser.add_argument("-e", "--ext", type=str, help='Pattern string for filename matching check! \
-        Filters out files subject to checksum calculation. For example: "*.zip,*.rar,*.txt"', default="*.zip")
+    parser = argparse.ArgumentParser(description=my_strings.strDescription, epilog=my_strings.strEpilog)
+    parser.add_argument("-c", "--check_file", type=str, help=my_strings.strArgCheckFile)
+    parser.add_argument("-s", "--src", type=str, help=my_strings.strArgSrc)
+    parser.add_argument("-a", "--alg", type=str, help=my_strings.strArgAlg, default="md5")
+    parser.add_argument("-e", "--ext", type=str, help=my_strings.strArgExt, default="*.zip")
 
     args = parser.parse_args()
 
@@ -97,13 +93,15 @@ def main():
         delta = dt.delta()  # in second [float]
         mib_per_sec = total_size / MiB_1 / delta
         # Итоги проверки файлов по их контрольным суммам
-        print(f"Total files checked: {total_files}\tModified files: {modified}\tI/O errors: {access_err}")
-        print(f"Checking speed [MiB/sec]: {mib_per_sec:.3f}")
+        print(f"{my_strings.strTotalFilesChecked}: {total_files}")
+        print(f"{my_strings.strTotalFilesMod}: {modified}")
+        print(f"{my_strings.strIOErrors}: {access_err}")
+        print(f"{my_strings.strCheckingSpeed}: {mib_per_sec:.3f}")
         sys.exit()  # выход
 
     if args.src:
         if not my_utils.is_folder_exist(args.src):
-            raise ValueError(f"{my_strings.strInvalidSrcFld}: {args.src}")
+            raise ValueError(f"{my_strings.strInvalidSrcFld} {args.src}")
     else:
         args.src = src_folder
 
@@ -120,21 +118,22 @@ def main():
 
     # сохраняю настройки в stdout
     cw = config.ConfigWriter(filename_or_fileobject=sys.stdout, check_crc=True)
-    cw.write_section(my_strings.str_settings_header, loc_d.items())
+    cw.write_section(swtrans.str_settings_header, loc_d.items())
 
     total_size = count_files = 0
     # вывод в stdout информации при подсчете контрольных сумм
-    cw.write_section(my_strings.str_start_files_header, None)
+    cw.write_section(swtrans.str_start_files_header, None)
     for file_hash, file_name, file_size in process(args.src, args.ext, args.alg):
         total_size += file_size  # file size
         count_files += 1
-        cw.write_line(f"{file_hash}{my_strings.strCS_filename_splitter}{file_name}")
+        cw.write_line(f"{file_hash}{swtrans.strCS_filename_splitter}{file_name}")
 
-    cw.write_section(my_strings.str_info_section, None)
+    cw.write_section(swtrans.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"Ended: {dt.stop_time}\tFiles: {count_files};\tBytes processed: {total_size}")
+    cw.write_line(f"{my_strings.strEnded}: {dt.stop_time}\t{my_strings.strFiles}: {count_files};\t"
+                  f"{my_strings.strBytesProcessed}: {total_size}")
     mib_per_sec = total_size / MiB_1 / delta
-    cw.write_line(f"Processing speed [MiB/sec]: {mib_per_sec:.3f}")
+    cw.write_line(f"{my_strings.strProcSpeed}: {mib_per_sec:.3f}")
 
 
 if __name__ == '__main__':

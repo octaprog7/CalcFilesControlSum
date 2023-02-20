@@ -1,27 +1,49 @@
-"""any strings for util"""
+"""any strings for project"""
+import os
+import pathlib
+import locale
+import calc_files_control_sum.my_int as my_int
 
-strFolderHandling = "Folder handling"
-strFEF = "File extension filter"
-strCCA = "Checksum calculation algorithm"
+# чтобы активировать пользовательскую locale! Для форматирования даты и времени!
+# locale.setlocale(locale.LC_ALL, '')
+# текущий язык локали
+curr_lang = locale.getdefaultlocale()[0][:2].upper()
+# полный путь к файлу
+src_folder = pathlib.Path(__file__).parent
+# чтение интернационализированных строк
+_I = my_int.Internationalization(f"{src_folder}{os.path.sep}translated.csv", curr_lang)
 
-head_header = "#"
-str_start_files_header = f"FILES_AND_CONTROL_SUM"
-str_settings_header = "SETTINGS"
-str_info_section = "INFO AND STATISTICS"
-strCS_filename_splitter = "\t"
-strKeyValueSeparator = ":"
+# переводимые на другие языки строки
 
-strInvalidSrcFld = "Invalid source folder!"
-strInvalidCheckFn = "Invalid check file name!"
-strOsError = "Operational System Error!"
+# для cfcs.py
+strInvalidSrcFld = _I("strInvalidSrcFld")               # used in cfcs.py
+strInvalidCheckFn = _I("strInvalidCheckFn")             # used in cfcs.py
+strFileModified = _I("strFileModified")                 # used in cfcs.py
+strCheckingStarted = _I("strCheckingStarted")           # used in cfcs.py
 
-strFileNotModified = "File is not modified."
-strFileModified = "Attention! The file has been modified"
-strFileNotFound = "File not found!"
+strDescription = _I("strDescription")   # used in cfcs.py
+strEpilog = _I("strEpilog")             # used in cfcs.py
+strArgCheckFile = _I("strArgCheckFile")        # used in  cfcs.py
+strArgSrc = _I("strArgSrc")     # used in cfcs.py
+strArgAlg = _I("strArgAlg")     # used in cfcs.py
+strArgExt = _I("strArgExt")     # used in cfcs.py
 
-strCheckingStarted = "Checking started!"
-strCheckingEnded = "Checking ended!"
+# для cfcs.py
+strCheckingSpeed = _I("strCheckingSpeed")
+strTotalFilesChecked = _I("strTotalFilesChecked")
+strTotalFilesMod = _I("strTotalFilesMod")
+strIOErrors = _I("strIOErrors")
+strProcSpeed = _I("strProcSpeed")
+strEnded = _I("strEnded")
+strFiles = _I("strFiles")
+strBytesProcessed = _I("strBytesProcessed")
 
-strParseFileError = "Error parsing file!"
-strCRClabel = "hash_val"
-default_cfg_crc_alg = "md5"
+# для config.py
+strInvalidInputParameter = _I("strInvalidInputParameter")
+strInvalidCrcValue = _I("strInvalidCrcValue")
+strCalcul = _I("strCalcul")
+strInvalidSectionNameLength = _I("strInvalidSectionNameLength")
+
+# для my_utils.py
+strOsError = _I("strOsError")
+strFileChecked = _I("strFileChecked")

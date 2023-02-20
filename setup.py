@@ -6,7 +6,7 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="calc_files_control_sum",
-    version="1.0.3",
+    version="1.1.0",
     author="Roman Shevchik",
     author_email="goctaprog@gmail.com",
     description="Calculate files control sum",
@@ -15,6 +15,7 @@ setuptools.setup(
     url="https://github.com/octaprog7/CalcFilesControlSum",
     packages = setuptools.find_packages(where='src'),
     package_dir = {'': 'src'},
+    package_data={"": ["*.csv", "*.zzz"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
