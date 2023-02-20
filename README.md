@@ -65,3 +65,5 @@ File scan speed [MiB/s]: 82.969
 ## PyPi
 https://pypi.org/project/calc-files-control-sum/
 
+## Internationalization
+Most of the program messages are translated into five languages: English, Russian, German, Spanish, French.
