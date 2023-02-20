@@ -9,6 +9,7 @@ import calc_files_control_sum.my_utils as my_utils
 # locale.setlocale(locale.LC_ALL, '')
 # текущий язык локали
 curr_lang = locale.getdefaultlocale()[0][:2].upper()
+# полный путь к файлу
 src_folder = my_utils.get_owner_folder_path(sys.argv[0])
 # для получения строк
 _I = my_int.Internationalization(f"{src_folder}{os.pathsep}translated.csv", curr_lang)
