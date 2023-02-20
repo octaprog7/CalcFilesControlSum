@@ -56,7 +56,7 @@ hash_val	DD44D3D71819D7EE6A5622544AE1905E
 ### Result
 ```
 Checking files by their checksums has begun!
-The file has been verified. No changes found.: /mnt/anydata/CodeComposerStudio/CCS12.1.0.00007_linux-x64.tar.gz
+The file has been verified. No changes found.: /mnt/anydata/big_archive.tar.gz
 Total files checked: 1
 Number of modified files: 0
 Number of I/O errors: 0
