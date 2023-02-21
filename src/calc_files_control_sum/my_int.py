@@ -6,7 +6,7 @@ import csv
 def _get_fields_by_names(csv_filename: str, column_names: [tuple, list], delimiter: str = ',') -> tuple:
     """Итератор, который возвращает за каждый вызов кортеж из полей csv файла, имена которых (первая строка),
     в виде строк, содержит последовательность field_names"""
-    with open(csv_filename, mode='r', newline='') as csv_file:
+    with open(csv_filename, mode='r', encoding="utf-8", newline='') as csv_file:
         row_reader = csv.reader(csv_file, delimiter=delimiter)
         _b = True
         for _row in row_reader:
