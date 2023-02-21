@@ -6,7 +6,7 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="calc_files_control_sum",
-    version="1.1.0",
+    version="1.1.1",
     author="Roman Shevchik",
     author_email="goctaprog@gmail.com",
     description="Calculate files control sum",
