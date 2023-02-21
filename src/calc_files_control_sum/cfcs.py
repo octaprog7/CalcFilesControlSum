@@ -69,6 +69,8 @@ def check_files(control_sum_filename: str) -> tuple:
 
 
 def main():
+    # изменяю кодировку stdout
+    sys.stdout.reconfigure(encoding=config.Config.default_encoding)
     """Главная функция"""
     src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
 
