@@ -16,10 +16,14 @@ class Config(ABC):
     SEC_NAME_START = "{"
     SEC_NAME_END = "}"
     min_section_name_length = 5
+    default_encoding = "utf-8"
 
-    def __init__(self, filename_or_fileobject: [str, IO], check_crc: bool = False):
+    def __init__(self, filename_or_fileobject: [str, IO], check_crc: bool = False,
+                 def_encoding=default_encoding):
         # подсчитать crc перед записью настроек или нет!
         self._check_crc = check_crc
+        # кодировка файлов по умолчанию!
+        self._default_enc = def_encoding  # = locale.getpreferredencoding()
         if isinstance(filename_or_fileobject, str):
             self._f_name = filename_or_fileobject
             self._fp = None
@@ -37,6 +41,10 @@ class Config(ABC):
     @property
     def check_crc(self) -> bool:
         return self._check_crc
+
+    @property
+    def default_enc(self) -> str:
+        return self._default_enc
 
     @check_crc.setter
     def check_crc(self, value: bool):
@@ -69,7 +77,7 @@ class ConfigWriter(Config):
     """
 
     def _open(self, filename: str) -> IO:
-        return open(file=filename, mode="w", encoding="utf-8")
+        return open(file=filename, mode="w", encoding=self.default_enc)
 
     @staticmethod
     def _get_line(key: str, value: str) -> str:
@@ -95,7 +103,7 @@ class ConfigWriter(Config):
     def write_line(self, line: str):
         """write only one line(s) to file or stream"""
         if self.check_crc:
-            self.hash.update(bytes(line, encoding="utf-8"))
+            self.hash.update(bytes(line, encoding=self.default_enc))
         print(line, file=self._fp)
 
     def __del__(self):
@@ -109,14 +117,14 @@ class ConfigReader(Config):
     """Read configuration from file"""
     def _open(self, filename: str) -> IO:
         if self.check_crc:
-            with open(file=filename, mode="r", encoding="utf-8") as cfg_file:
+            with open(file=filename, mode="r", encoding=self.default_enc) as cfg_file:
                 crc_read = True
                 lhash = hashlib.new(swtrans.default_cfg_crc_alg)
                 for line in cfg_file:
                     if line.startswith(swtrans.strCRClabel):
                         break
                     # удаляю символы перевода строки, т. к. я их не записывал!
-                    lhash.update(bytes(line.rstrip("\n"), encoding="utf-8"))
+                    lhash.update(bytes(line.rstrip("\n"), encoding=self.default_enc))
                 else:
                     crc_read = False
                 if crc_read:
@@ -127,7 +135,7 @@ class ConfigReader(Config):
                         raise ValueError(f"{filename}. {my_strings.strInvalidCrcValue}: {crc}, "
                                          f"{my_strings.strCalcul}: {calcul}.")
         #
-        return open(file=filename, encoding="utf-8")
+        return open(file=filename, encoding=self.default_enc)
 
     def read(self, section_name: str = "") -> Iterable[tuple[str, str]]:
         """Iterable reading config file. function-generator.
