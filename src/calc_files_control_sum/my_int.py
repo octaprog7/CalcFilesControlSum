@@ -10,9 +10,10 @@ def _get_fields_by_names(csv_filename: str, column_names: [tuple, list], delimit
         row_reader = csv.reader(csv_file, delimiter=delimiter)
         _b = True
         for _row in row_reader:
-            if _b:
+            if _b:  # первая строка cvs файла должна содержать названия столбцов! создание кортежа индексов столбцов
                 column_indexes = tuple([_row.index(column_name) for column_name in column_names])
                 _b = False
+            # кортеж значений строк нужных столбцов
             yield tuple([_row[_index] for _index in column_indexes])
 
 
