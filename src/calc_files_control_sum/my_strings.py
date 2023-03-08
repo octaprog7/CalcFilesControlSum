@@ -2,7 +2,7 @@
 import os
 import pathlib
 import locale
-import calc_files_control_sum.my_int as my_int
+import calc_files_control_sum.internationalization as my_int
 
 # чтобы активировать пользовательскую locale! Для форматирования даты и времени!
 # locale.setlocale(locale.LC_ALL, '')
@@ -11,7 +11,7 @@ curr_lang = locale.getdefaultlocale()[0][:2].upper()
 # полный путь к файлу
 src_folder = pathlib.Path(__file__).parent
 # чтение интернационализированных строк
-_I = my_int.Internationalization(f"{src_folder}{os.path.sep}translated.csv", curr_lang)
+_I = my_int.CSVProvider(f"{src_folder}{os.path.sep}translated.csv", "strID", curr_lang)
 
 # переводимые на другие языки строки
 
