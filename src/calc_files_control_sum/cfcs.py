@@ -56,10 +56,13 @@ def check_files(control_sum_filename: str) -> tuple:
             # вычисляю общий размер проверенных файлов в байтах
             total_size += my_utils.get_file_stat(loc_fn).st_size
             total_tested += 1
-            print(f"{my_strings.strFileChecked}: {loc_fn}")     # сообщаю пользователю, что файл был проверен
             if curr_cs != old_cs:
                 modified_files_count += 1
+                # сообщаю пользователю, что файл был проверен, изменения в файле ЕСТЬ!
                 print(f"{my_strings.strFileModified}{swtrans.strKeyValueSeparator} {loc_fn}")
+            else:
+                # сообщаю пользователю, что файл был проверен, изменений в файле нет!
+                print(f"{my_strings.strFileChecked}: {loc_fn}")
         except OSError as e:
             access_errors += 1
             print(e)
