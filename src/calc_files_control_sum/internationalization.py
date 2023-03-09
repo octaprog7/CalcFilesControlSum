@@ -1,4 +1,4 @@
-"""реализация интернационализации.
+"""реализация интернационализации. смотри: https://github.com/octaprog7/PyInternalization
 Если что, я знаю про gettext"""
 from abc import ABC, abstractmethod
 import csv
