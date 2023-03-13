@@ -67,3 +67,4 @@ https://pypi.org/project/calc-files-control-sum/
 
 ## Internationalization
 Most of the program messages are translated into five languages: English, Russian, German, Spanish, French.
+See: https://github.com/octaprog7/PyInternalization.
