@@ -52,7 +52,7 @@ def check_files(control_sum_filename: str) -> tuple:
     total_tested, modified_files_count, access_errors, total_size = 0, 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
         try:
-            curr_cs = my_utils.get_hash_file(loc_fn)
+            curr_cs = my_utils.get_hash_file(full_path_to_file=loc_fn, algorithm=settings['alg'])
             # вычисляю общий размер проверенных файлов в байтах
             total_size += my_utils.get_file_stat(loc_fn).st_size
             total_tested += 1
