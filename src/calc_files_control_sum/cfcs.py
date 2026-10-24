@@ -14,6 +14,7 @@ import calc_files_control_sum.my_utils as my_utils
 import calc_files_control_sum.my_strings as my_strings
 import calc_files_control_sum.str_without_trans as swtrans
 import calc_files_control_sum.config as config
+from calc_files_control_sum import __version__
 
 
 def process(full_path_to_folder: str, patterns: list, alg: str) -> Iterable[tuple[str, str, int]]:
@@ -97,6 +98,13 @@ def main():
     src_folder = os.getcwd()
 
     parser = argparse.ArgumentParser(description=my_strings.strDescription, epilog=my_strings.strEpilog)
+    # Что вообще такое %(prog)s?
+    # %(prog)s — это заглушка, которую понимает только argparse. Когда пользователь пишет cfcs --version, 
+    # библиотека argparse сама заменяет %(prog)s на имя, под которым запустили программу.
+    # По умолчанию это os.path.basename(sys.argv[0]). То есть:
+    # Если запустить как python -m calc_files_control_sum.cfcs, то prog будет cfcs.py.
+    # Если через установленную команду cfcs — то prog будет просто cfcs.
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("-c", "--check_file", type=str, help=my_strings.strArgCheckFile)
     parser.add_argument("-s", "--src", type=str, help=my_strings.strArgSrc)
     parser.add_argument("-a", "--alg", type=str, help=my_strings.strArgAlg, default="md5")

@@ -13,7 +13,7 @@ from . import my_utils
 from .config import Config, ConfigReader, ConfigWriter
 
 # Номер версии должен совпадать с номером версии в setup.cfg
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 __all__ = [
     "Config",

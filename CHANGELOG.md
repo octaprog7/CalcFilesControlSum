@@ -5,6 +5,16 @@ All notable changes to the CalcFilesControlSum project.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-10-24
+
+### Added
+- [`cfcs.py`](src/calc_files_control_sum/cfcs.py): new command line argument `--version` — prints the utility version (e.g. `cfcs 1.2.1`) and exits; implemented via `argparse` `action="version"` and the package `__version__` from [`__init__.py`](src/calc_files_control_sum/__init__.py).
+- [`README.md`](README.md): `Installation` section — on modern Linux (PEP 668, externally managed environment) the package is installed with `pipx` (`pipx install calc-files-control-sum`) instead of a plain `pip install`.
+- [`tests/test_cfcs.py`](tests/test_cfcs.py): test `TestVersionArg` verifying that `--version` prints the actual package version and exits with code 0.
+
+### Notes
+- Version `1.2.1` is released via `pipx` (as recommended on modern Linux): `pipx install calc-files-control-sum`.
+
 ## [1.2.0] - 2026-10-24
 
 ### Added

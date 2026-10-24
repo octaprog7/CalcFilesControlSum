@@ -1,11 +1,29 @@
 # Utility to Calc Files Control Sum (CFCS) in specified folder.
 
 File checksum information is written to stdout.
-To later check the files for changes, you need to save this information 
+To later check the files for changes, you need to save this information
 to a file by redirecting the output to a file (> filename.ext)
+
+## Installation
+
+On modern Linux distributions a plain `pip install ...` is blocked by default
+(PEP 668 - "externally managed environment"), so install the utility with
+[pipx](https://pipx.pypa.io/):
+
+```bash
+pipx install calc-files-control-sum
+```
+
+After installation the utility is available as the console command `cfcs`.
+To upgrade: `pipx upgrade calc-files-control-sum`.
+
+Alternative install options:
+- into a virtual environment: `python -m venv .venv && .venv/bin/pip install calc-files-control-sum`;
+- force installation with pip (not recommended): `pip install --user --break-system-packages calc-files-control-sum`.
 
 ## Command string parameters:
   - -h, --help            show this help message and exit
+  - --version             show program's version number and exit
   - -c CHECK_FILE, --check_file CHECK_FILE
                         Name of the source file of checksums for checking
                         files. Type: cfcs [opt] > filename.ext to produce
