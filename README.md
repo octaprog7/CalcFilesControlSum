@@ -21,7 +21,7 @@ to a file by redirecting the output to a file (> filename.ext)
 ## Example: 
 - ```cfcs --src=/home/username --alg=sha1 --ext="*.rar,*.avi,*.bmp" (writing checksum information to stdout).```
 - ```cfcs --src=/home/username --alg=sha1 --ext="*.zip,*.7z,*.mp4" > control_sum_filename.ext (writing checksum information to file).```
-- ```cfcs --check_file==/home/previously_created_file.ext  (check files in folder).```
+- ```cfcs --check_file=/home/previously_created_file.ext  (check files in folder).```
 
 ## Make check folder file
     cfcs --src="/home/roman/Изображения" --ext="*.png" > my_images.cs
@@ -45,8 +45,8 @@ CD573CFAACE07E7949BC0C46028904FF	test0.img
 C698C87FB53058D493492B61F4C74189	test2.img
 CD573CFAACE07E7949BC0C46028904FF	test4.img
 {INFO AND STATISTICS}
-Ended: 2022-12-17 14:05:58.980157	Files: 6;	Bytes processed: 9663676416
-Processing speed [MiB/sec]: 563.913
+Work completed: 2022-12-17 14:05:58.980157	Number of files: 6;	Bytes processed: 9663676416
+Processing speed [MiB/s]: 563.913
 hash_val	DD44D3D71819D7EE6A5622544AE1905E
 ```
 
@@ -70,4 +70,6 @@ Most of the program messages are translated into five languages: English, Russia
 See: https://github.com/octaprog7/PyInternalization.
 
 ## Note
-If you liked my software, please be generous and give it a star!
+- The folder scan is **NOT recursive**: only files directly located in the specified folder (top level) are
+  processed. Files in subfolders are ignored by design.
+- If you liked my software, please be generous and give it a star!

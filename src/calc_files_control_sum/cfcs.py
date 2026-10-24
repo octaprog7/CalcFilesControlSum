@@ -7,6 +7,7 @@ import pathlib
 import sys
 import fnmatch
 import os
+import hashlib
 from collections.abc import Iterable
 
 import calc_files_control_sum.my_utils as my_utils
@@ -14,22 +15,32 @@ import calc_files_control_sum.my_strings as my_strings
 import calc_files_control_sum.str_without_trans as swtrans
 import calc_files_control_sum.config as config
 
-MiB_1 = 1024*1024
-
 
 def process(full_path_to_folder: str, patterns: list, alg: str) -> Iterable[tuple[str, str, int]]:
     """Перечисляет файлы внутри папки, подсчитывая их контрольную сумму,
     получая имя файла и его размер в байтах.
-    Функция-генератор"""
+    Функция-генератор.
+    ВНИМАНИЕ: обход папки не рекурсивный - обрабатываются только
+    файлы верхнего уровня, файлы во вложенных папках игнорируются!"""
     loc_path = pathlib.Path(full_path_to_folder)
     # enumerating files ONLY!!!
     for child in loc_path.iterdir():
         if child.is_file():
             for pattern in patterns:
                 if fnmatch.fnmatch(child.name, pattern):
-                    # file checksum calculation
-                    loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
-                    yield loc_hash, child.name, child.stat().st_size
+                    try:
+                        # Получаю размер файла до вычисления хэша. Он должен
+                        # соответствовать читаемому содержимому
+                        file_size = child.stat().st_size
+                        # file checksum calculation
+                        loc_hash = my_utils.get_hash_file(str(child.absolute()), alg)
+                    except OSError as e:
+                        # Пропускаю недоступный или удалённый во время сканирования файл,
+                        # не прерывая создание всего отчёта!
+                        # Вывожу сообщение в stderr, чтобы не испортить отчёт в stdout.
+                        print(f"{my_strings.strOsError}: {e}", file=sys.stderr)
+                        break
+                    yield loc_hash, child.name, file_size
                     break
 
 
@@ -41,7 +52,8 @@ def parse_control_sum_file(control_sum_filename: str, settings: dict) -> Iterabl
     # вычислять CRC не нужно!
     cr = config.ConfigReader(control_sum_filename, check_crc=False)
     for cs_from_file, filename_ext in cr.read(swtrans.str_start_files_header):
-        full_file_name = f"{fld}{os.path.sep}{filename_ext.strip()}"
+        # декодирую экранированные имена файлов (табуляция и обратный слэш)!
+        full_file_name = f"{fld}{os.path.sep}{my_utils.unescape_file_name(filename_ext)}"
         yield full_file_name, cs_from_file
 
 
@@ -49,6 +61,12 @@ def check_files(control_sum_filename: str) -> tuple:
     """comparison of the current checksum of the file and the checksum read from the file."""
     # вызов my_utils.settings_from_file проверяет контрольную сумму файла настроек после его открытия
     settings = my_utils.settings_from_file(control_sum_filename, check_crc=True)
+    if not settings:
+        # ошибка доступа к файлу: settings_from_file уже напечатал сообщение об ошибке
+        raise ValueError(f"{my_strings.strInvalidCheckFn}: {control_sum_filename}")
+    for required_key in ("src", "alg"):
+        if required_key not in settings:
+            raise ValueError(f"{my_strings.strInvalidCheckFn}: missing '{required_key}' in {control_sum_filename}")
     total_tested, modified_files_count, access_errors, total_size = 0, 0, 0, 0
     for loc_fn, old_cs in parse_control_sum_file(control_sum_filename, settings):
         try:
@@ -72,10 +90,11 @@ def check_files(control_sum_filename: str) -> tuple:
 
 
 def main():
+    """Главная функция"""
     # изменяю кодировку stdout
     sys.stdout.reconfigure(encoding=config.Config.default_encoding)
-    """Главная функция"""
-    src_folder = my_utils.get_owner_folder_path(sys.argv[0])  # папка с файлами
+    # Папка с файлами для подсчета их КС: по умолчанию это текущий рабочий каталог (см. README)!
+    src_folder = os.getcwd()
 
     parser = argparse.ArgumentParser(description=my_strings.strDescription, epilog=my_strings.strEpilog)
     parser.add_argument("-c", "--check_file", type=str, help=my_strings.strArgCheckFile)
@@ -85,18 +104,27 @@ def main():
 
     args = parser.parse_args()
 
+    # проверяю заданный алгоритм хеширования на существование в hashlib.
+    if args.alg.lower() not in hashlib.algorithms_available:
+        parser.error(f"Invalid checksum algorithm: {args.alg}")
+
     # режим проверки файлов включен (!= None)
     if args.check_file and not my_utils.is_file_exist(args.check_file):
-        raise ValueError(f"{my_strings.strInvalidCheckFn}: {args.check_file}")
+        parser.error(f"{my_strings.strInvalidCheckFn}: {args.check_file}")
 
     if args.check_file:
         print(my_strings.strCheckingStarted)
         # текущее время
         dt = my_utils.DeltaTime()
-        # проверка файлов по их контрольным суммам
-        total_files, modified, access_err, total_size = check_files(args.check_file)
+        try:
+            # проверка файлов по их контрольным суммам
+            total_files, modified, access_err, total_size = check_files(args.check_file)
+        except (OSError, ValueError) as e:
+            # повреждённый/недоступный файл контроля или ошибка при проверке
+            print(e)
+            sys.exit(1)
         delta = dt.delta()  # in second [float]
-        mib_per_sec = total_size / MiB_1 / delta
+        mib_per_sec = my_utils.calc_mib_per_sec(total_size, delta)
         # Итоги проверки файлов по их контрольным суммам
         print(f"{my_strings.strTotalFilesChecked}: {total_files}")
         print(f"{my_strings.strTotalFilesMod}: {modified}")
@@ -106,14 +134,15 @@ def main():
 
     if args.src:
         if not my_utils.is_folder_exist(args.src):
-            raise ValueError(f"{my_strings.strInvalidSrcFld} {args.src}")
+            parser.error(f"{my_strings.strInvalidSrcFld} {args.src}")
     else:
         args.src = src_folder
 
-    if args.ext:
-        # формирование списка расширений для записи в секцию настроек файла
-        args.ext = args.ext.replace(" ", "")   # удаляю все пробелы из строки
-        args.ext = args.ext.split(",")  # создаю список
+    # формирование списка расширений для записи в секцию настроек файла
+    args.ext = args.ext.replace(" ", "")   # удаляю все пробелы из строки
+    args.ext = args.ext.split(",")  # создаю список
+    # отбрасываю пустые части (от ввода "" или вида "*.zip, *.rar"!)
+    args.ext = [pattern for pattern in args.ext if pattern]
 
     # текущее время
     dt = my_utils.DeltaTime()
@@ -131,14 +160,19 @@ def main():
     for file_hash, file_name, file_size in process(args.src, args.ext, args.alg):
         total_size += file_size  # file size
         count_files += 1
-        cw.write_line(f"{file_hash}{swtrans.strCS_filename_splitter}{file_name}")
+        # имя файла экранирую: табуляция - разделитель полей строки отчёта!
+        cw.write_line(f"{file_hash}{swtrans.strCS_filename_splitter}{my_utils.escape_file_name(file_name)}")
 
     cw.write_section(swtrans.str_info_section, None)
     delta = dt.delta()  # in second [float]
-    cw.write_line(f"{my_strings.strEnded}: {dt.stop_time}\t{my_strings.strFiles}: {count_files};\t"
-                  f"{my_strings.strBytesProcessed}: {total_size}")
-    mib_per_sec = total_size / MiB_1 / delta
-    cw.write_line(f"{my_strings.strProcSpeed}: {mib_per_sec:.3f}")
+    # строки файла отчёта (*.cs) не локализуются: формат одинаков во всех локалях
+    cw.write_line(f"{swtrans.str_ended_report}: {dt.stop_time}\t"
+                  f"{swtrans.str_files_report}: {count_files};\t"
+                  f"{swtrans.str_bytes_processed_report}: {total_size}")
+    mib_per_sec = my_utils.calc_mib_per_sec(total_size, delta)
+    cw.write_line(f"{swtrans.str_proc_speed_report}: {mib_per_sec:.3f}")
+    # явная запись строки CRC и завершение записи.
+    cw.close()
 
 
 if __name__ == '__main__':

@@ -8,4 +8,9 @@ strCS_filename_splitter = "\t"                          # used in cfcs.py, confi
 strKeyValueSeparator = ":"                              # used in cfcs.py
 # без перевода! для config.py
 strCRClabel = "hash_val"                                # used in config.py
-default_cfg_crc_alg = "md5"                             # used in config.py
+default_cfg_crc_alg = "sha256"                          # used in config.py
+# без перевода! строки файла отчёта (*.cs): формат файла не зависит от локали
+str_ended_report = "Work completed"                     # used in cfcs.py
+str_files_report = "Number of files"                    # used in cfcs.py
+str_bytes_processed_report = "Bytes processed"          # used in cfcs.py
+str_proc_speed_report = "Processing speed [MiB/s]"      # used in cfcs.py

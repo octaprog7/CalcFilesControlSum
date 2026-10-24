@@ -7,7 +7,13 @@ import calc_files_control_sum.internationalization as my_int
 # чтобы активировать пользовательскую locale! Для форматирования даты и времени!
 # locale.setlocale(locale.LC_ALL, '')
 # текущий язык локали
-curr_lang = locale.getdefaultlocale()[0][:2].upper()
+try:
+    _loc_lang = locale.getlocale()[0]
+except Exception:
+    _loc_lang = None
+if not _loc_lang:
+    _loc_lang = os.environ.get("LC_ALL") or os.environ.get("LANG") or "en"
+curr_lang = _loc_lang[:2].upper()
 # полный путь к файлу
 src_folder = pathlib.Path(__file__).parent
 # чтение интернационализированных строк
@@ -33,10 +39,6 @@ strCheckingSpeed = _I("strCheckingSpeed")
 strTotalFilesChecked = _I("strTotalFilesChecked")
 strTotalFilesMod = _I("strTotalFilesMod")
 strIOErrors = _I("strIOErrors")
-strProcSpeed = _I("strProcSpeed")
-strEnded = _I("strEnded")
-strFiles = _I("strFiles")
-strBytesProcessed = _I("strBytesProcessed")
 
 # для config.py
 strInvalidInputParameter = _I("strInvalidInputParameter")

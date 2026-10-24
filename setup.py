@@ -6,7 +6,7 @@ with open("README.md") as file:
 
 setuptools.setup(
     name="calc_files_control_sum",
-    version="1.1.4",
+    version="1.2.0",
     author="Roman Shevchik",
     author_email="kolbasilyvasily@yandex.ru",
     description="Calculate files control sum",
@@ -26,7 +26,7 @@ setuptools.setup(
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
     ],
-    python_requires='>=3.7.2,<3.12',
+    python_requires='>=3.10',
     entry_points={
         'console_scripts': [
             'cfcs = calc_files_control_sum.cfcs:main',
